@@ -1,0 +1,24 @@
+alias pmma='python manage.py makemigrations'
+alias pmmi='python manage.py migrate'
+alias lsgit='cd /home/izot/Documents/_GIT'
+alias lsd='cd /home/izot/Downloads'
+alias pi='pip install -r'
+alias pl='pip list'
+alias pes='pipenv shell'
+
+alias ass='source /home/izot/assume_role.sh'
+alias ls='ls -lh  --color=auto'
+alias lsp='ls -d $PWD/*  --color=auto'
+alias awsi='aws sts get-caller-identity'
+
+alias vpn='/opt/cisco/anyconnect/bin/vpn'
+alias vpnui='/opt/cisco/anyconnect/bin/vpnui'
+
+alias dp='docker ps'
+alias di='docker images'
+alias dr='docker rmi -f'
+
+# alias dddi='docker rmi -f $(docker images | grep "<none>" | awk '{print $3}')'
+#alias node='/home/izot/Documents/node-v8.11.3-linux-x64/bin/node'
+
+source /home/izot/aws_time_creds
