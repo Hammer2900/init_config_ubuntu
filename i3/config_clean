@@ -150,6 +150,11 @@ assign [class="Sublime_text"] → Sublime-text
 assign [class="Postman"] → Postman
 assign [class="Slack"] → Slack
 
+# /////////////////////////////////////////// Switch window ///////////////////////////////////////////
+
+bindsym $mod+grave exec wmctrl -a Google
+bindsym $mod+z exec wmctrl -a 'Mozilla Firefox'
+
 # //////////////////////////////////////////// System key ////////////////////////////////////////////
 
 bindsym $mod+F9 exec dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.Suspend" boolean:true
@@ -225,6 +230,15 @@ mode "resize" {
         bindsym Escape mode "default"
 }
 
+mode "shoice" {
+        bindsym q exec wmctrl -a Google; mode "default"
+	bindsym w exec wmctrl -a 'Mozilla Firefox'; mode "default"
+
+	bindsym s exec wmctrl -a 'socmonitor [~/Documents/'; mode "default"
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
 
 # ///////////////////////////////////////////// Bar area /////////////////////////////////////////////
 
@@ -233,5 +247,22 @@ bar {
         position          top
         tray_output primary
 }
+
+# ////////////////////////////////////////// Mouse settings //////////////////////////////////////////
+
+#bindsym --whole-window Ctrl+button1 workspace $ws1
+#bindsym --whole-window Ctrl+button3 workspace $pycharm
+
+#bindsym --whole-window Shift+button1 workspace $ws1
+#bindsym --whole-window Shift+button3 workspace $subl
+
+
+bindsym --whole-window Mod1+button1 workspace $pycharm
+bindsym --whole-window Mod1+button3 workspace $ws2
+
+bindsym --whole-window KP_Insert workspace $slack
+
+bindsym --whole-window KP_Prior exec pactl move-sink-input 1 1
+bindsym --whole-window KP_Up exec pactl move-sink-input 1 0
 
 # /////////////////////////////////////////// Other things ///////////////////////////////////////////
