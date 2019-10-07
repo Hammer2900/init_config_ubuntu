@@ -1,2 +1,6 @@
 # init_config_ubuntu
-my linux config
+
+xrand - check monitors
+arand - setup monitors
+xprop - get class names
+lxappearance - prepare folder view
