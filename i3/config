@@ -10,6 +10,25 @@
 # Please see http://i3wm.org/docs/userguide.html for a complete reference!
 
 set $mod Mod4
+#set $mod button3
+set $keyboardswitch exec setxkbmap -layout us,ru, -option grp:alt_shift_toggle
+set $play && play /home/izot/Downloads/Bfxr/briefcase-lock-10.wav
+set $ws1  "1"
+set $ws2  "2"
+set $ws3  "3"
+set $ws4  "4"
+set $ws5  "5"
+set $ws6  "6"
+set $ws7  "7"
+set $ws8  "8"
+set $ws9  "9"
+set $pycharm  "PyCharm"
+set $skype  "Skype"
+#set $slack  "Slack"
+set $subl  "Sublime-text"
+set $vga0  "VGA-0"
+set $hdm0  "HDMI-0"
+
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -17,7 +36,21 @@ set $mod Mod4
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
-font pango:DejaVu Sans Mono 12
+#font pango:DejaVu Sans Mono 12
+
+#font pango:DejaVu Sans Mono 12
+#font pango:DejaVu Sans Mono, Terminus Bold Semi-Condensed 13
+#font pango:Droid Sans Mono Dotted 12
+#font pango:DroidSansMono 13
+#font pango:Sans 13
+#font pango:hermit 12
+#font pango:Inconsolata 15
+#font pango:monospace 12
+#font pango:SourceCodePro-SemiBold 11
+#font pango:Source Code Pro for Powerline, FontAwesome Regular, Icons 13
+#font pango:Terminus 14px
+#font pango:UbuntuMono-regular 12
+font pango:DejaVu Sans Mono, FontAwesome 12
 
 # Before i3 v4.8, we used to recommend this one as the default:
 # font -misc-fixed-medium-r-normal--13-120-75-75-C-70-iso10646-1
@@ -30,13 +63,19 @@ font pango:DejaVu Sans Mono 12
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec sakura
+bindsym $mod+Return exec sakura -e /usr/bin/fish
 
 # kill focused window
 bindsym Mod4+Shift+q kill
+bindsym --whole-window Ctrl+button2 kill
+#bindsym F9 floating toggle, move position 300 200, resize set 1240 780, focus,
+bindsym F9 exec /home/izot/Documents/_GIT/test_python3/test01.py
+#bindsym F9 exec /home/izot/Documents/_GIT/test_python3/1.sh
+
+
 
 # start dmenu (a program launcher)
-bindsym $mod+d exec dmenu_run
+#bindsym $mod+d exec dmenu_run
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
@@ -74,9 +113,10 @@ bindsym $mod+v split v
 
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
+#bindsym F10 fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
+#bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
 
@@ -87,108 +127,136 @@ bindsym $mod+Shift+space floating toggle
 bindsym $mod+space focus mode_toggle
 
 # focus the parent container
-bindsym $mod+a focus parent
+#bindsym $mod+a focus parent
 
 # focus the child container
 #bindsym $mod+d focus child
 
 # switch to workspace
-bindsym $mod+1 workspace 1
-bindsym $mod+2 workspace 2
-bindsym $mod+3 workspace 3
-bindsym $mod+4 workspace 4
-bindsym $mod+5 workspace 5
-bindsym $mod+6 workspace 6
-bindsym $mod+7 workspace 7
-bindsym $mod+8 workspace 8
-bindsym $mod+9 workspace 9
-bindsym $mod+0 workspace 10
+#bindsym $mod+Ctrl+x workspace $ws1
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
 
-workspace "1" output HDMI-1
-workspace "PyCharm" output HDMI-2
+bindsym $mod+F1 exec /home/izot/Documents/_GIT/test_python3/web_app/MegadonNotesServer.py
+bindsym $mod+F2 exec /home/izot/Documents/_GIT/test_python3/web_app/Utils.py
+
+#workspace "1" output HDMI-1
+#workspace "PyCharm" output HDMI-2
 
 # move focused container to workspace
-bindsym $mod+Shift+1 move container to workspace 1
-bindsym $mod+Shift+2 move container to workspace 2
-bindsym $mod+Shift+3 move container to workspace 3
-bindsym $mod+Shift+4 move container to workspace 4
-bindsym $mod+Shift+5 move container to workspace 5
-bindsym $mod+Shift+6 move container to workspace 6
-bindsym $mod+Shift+7 move container to workspace 7
-bindsym $mod+Shift+8 move container to workspace 8
-bindsym $mod+Shift+9 move container to workspace 9
-bindsym $mod+Shift+0 move container to workspace 10
+#bindsym $mod+x move container to workspace 1
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9
 
 # ================== Jekos ==================
-bindsym $mod+Shift+Return exec pcmanfm
-bindsym $mod+Ctrl+Return exec gksu pcmanfm
-bindsym $mod+F1 exec sakura -e "htop"
-#bindsym $mod+F1 exec i3-msg "workspace 8; exec sakura -e 'htop'"
+bindsym $mod+Shift+Return exec pcmanfm $play
+bindsym $mod+Ctrl+Return exec gksu pcmanfm $play
+#bindsym $mod+F1 exec urxvt -x "htop" --class FloatTerminal
+bindsym $mod+grave exec wmctrl -a Google $play
+bindsym Control+grave scratchpad show
+bindsym $mod+z exec wmctrl -a 'Mozilla Firefox' $play
+bindsym $mod+s exec wmctrl -a 'Skype'
+bindsym $mod+x exec wmctrl -a 'Telegram '
+#bindsym Shift+z exec wmctrl -a 'Mozilla Firefox'
+#bindsym F7 exec sakura --class FloatTerminal
+bindsym F7 exec x-terminal-emulator --class FloatTerminal
+bindsym $mod+Ctrl+b exec sakura --class FloatTerminal
 #bindsym F1 exec com.github.stsdc.monitor
 bindsym F1 exec rofi -show run -bg #222222 -fg #888888 -hlbg #285577 -hlfg #ffffff
 bindsym F2 exec rofi -show window -bg #222222 -fg #888888 -hlbg #285577 -hlfg #ffffff
 #bindsym $mod+F1 exec rofi -modi chromium:/home/izot/Downloads/b644ad268acfffb6573aba515240270d-61c24333860608356d6edc51207c8493ade4b558/1.sh -show chromium
-bindsym $mod+Shift+s exec xfce4-screenshooter
+bindsym $mod+Shift+s exec flameshot gui $play
+bindsym $mod+q exec rofi -show window -bg #222222 -fg #888888 -hlbg #285577 -hlfg #ffffff
+#bindsym $mod+Shift+s exec xfce4-screenshooter
 #bindsym $mod+Shift+s exec /home/izot/_SOFT/flameshot_x86_64_0.5.1.AppImage gui
-bindsym $mod+Shift+t exec google-chrome --app=http://127.0.0.1:8005/textf/
+#bindsym $mod+Shift+t exec google-chrome --app=http://127.0.0.1:8005/textf/
 exec --no-startup-id feh --bg-scale "/home/izot/Downloads/Telegram Desktop/503437_artwork_custom_bike_motorbikes.jpg"
-exec --no-startup-id /etc/init.d/logmein-hamachi start
+#exec --no-startup-id /etc/init.d/logmein-hamachi start
 #exec_always xrandr --output HDMI-2 --left-of HDMI-1
-exec compton -f
-exec_always --no-startup-id dunst
-exec_always --no-startup-id flashfocus
-exec_always i3-msg "workspace 1, move workspace to output HDMI-1"
-exec_always i3-msg "workspace Vlc, move workspace to output HDMI-1"
-exec_always i3-msg "workspace 2, move workspace to output HDMI-2"
-exec_always i3-msg "workspace Skype, movie workspace to output HDMI-2"
-exec_always i3-msg "workspace Sublime-text, move workspace to output HDMI-1"
-exec_always i3-msg "workspace Postman, move workspace to output HDMI-1"
-exec_always i3-msg "workspace Zoom, move workspace to output HDMI-2"
-exec_always i3-msg "workspace DEBUG, move workspace to output HDMI-1"
+exec_always xrandr --output VGA-0 --mode 1920x1080 --pos 1920x0 --rotate normal --output DVI-D-0 --off --output HDMI-0 --primary --mode 1920x1080 --pos 0x0 --rotate normal
+exec_always compton -f
+#exec_always --no-startup-id dunst
+#exec_always --no-startup-id flashfocus
+
+
+
+
+exec_always i3-msg "workspace $ws1, move workspace to output $hdm0"
+exec_always i3-msg "workspace 2, move workspace to output $hdm0"
+exec_always i3-msg "workspace 6, move workspace to output $vga0"
+exec_always i3-msg "workspace Sublime-text, move workspace to output $vga0"
+exec_always i3-msg "workspace Skype, move workspace to output $vga0"
+exec_always i3-msg "workspace $pycharm, move workspace to output $hdm0"
+exec_always i3-msg "workspace $slack, move workspace to output $hdm0"
+
+
+
+
+
 exec_always pulseaudio -D
 bindsym $mod+Ctrl+k move workspace to output right
 bindsym $mod+Ctrl+j move workspace to output left
-bindsym $mod+F12 exec google-chrome --app=https://translate.google.com/
+bindsym $mod+F12 exec google-chrome --app=https://translate.google.com/ --class FloatTerminal
 bindsym $mod+F11 exec google-chrome --incognito --app=https://google.com/
-bindsym $mod+F10 exec /home/izot/_PROJECTS/TD-development/hmop.sh
-bindsym $mod+F6 exec /home/izot/_PROJECTS/TD-development/hmop2.sh
-bindsym $mod+F5 exec chromium-browser --remote-debugging-port=1337
+#bindsym $mod+F2 exec jgmenu --center
+#bindsym $mod+F10 exec /home/izot/_PROJECTS/TD-development/hmop.sh
+#bindsym $mod+F6 exec /home/izot/_PROJECTS/TD-development/hmop2.sh
+#bindsym $mod+F5 exec chromium-browser --remote-debugging-port=1337
 #bindsym $mod+F8 exec /home/izot/_ENV/HW/bin/python /home/izot/Downloads/sdas.py
 
-#gaps inner 10
-#gaps outer 10
-#for_window [class="^.*"] border pixel 3
-#for_window [title=".*Prod.*"] move to workspace "- SSH -"
-#for_window [title=".*Prod.*"] floating enable
-#exec --no-startup-id dropbox start
+for_window [class="^.*"] border pixel 3
+for_window [title=".*DevTools.*"] move to workspace "5", focus, move workspace to output HDMI-0
+for_window [title=".*Port forward.*"] move to workspace "Forward", move workspace to output HDMI-0
+#for_window [title=".*Google Переводчик.*"] move to workspace "6", focus, move workspace to output HDMI-0, $keyboardswitch
+for_window [title=".*file-roller.*"] floating enable
 
 
 bindsym $mod+Shift+minus move scratchpad, move position 0 0, resize set 1366 768;
 bindsym F12 scratchpad show
 focus_follows_mouse no
 
-exec --no-startup-id chromium-browser --remote-debugging-port=1337
-exec --no-startup-id /usr/bin/timedoctorpro
+#exec --no-startup-id chromium-browser --remote-debugging-port=1337
 
 for_window [class="(?i)gnome-calculator"] floating enable
 for_window [class="Pluma"] floating enable
 for_window [class="Tk"] floating enable
+for_window [class="X-terminal-emulator"] floating enable
+for_window [class="Geany"] floating enable
 for_window [class="Leafpad"] floating enable
 for_window [class="Firefox" instance="Dialog"] floating enable
 for_window [class="Firefox" instance="Extension"] floating enable
 for_window [class="mpv"] floating enable
-for_window [class="Telegram"] floating enable; border none
+#for_window [class="Telegram"] floating enable
 for_window [class="shadowsocks-qt5"] floating enable
-for_window [class="VirtualBox"] floating enable
+#for_window [class="VirtualBox"] floating enable
 for_window [class="Gdebi-gtk"] floating enable
 for_window [class="XCalc"] floating enable
 for_window [class="feh"] floating enable
 for_window [class="Pim"] floating enable
 for_window [title="Run - hw"] move to workspace "DEBUG"
+for_window [title="MegadonNotesServer1"] move to workspace "Notes"
+for_window [title="Utils1"] move to workspace "Utils"
+
+for_window [class="FloatTerminal"] floating enable
 
 
-assign [class="^Firefox$"] → 1
+assign [class="^Firefox$"] → 6
 assign [class="^google-chrome$"] → 1
+assign [class="Google-chrome"] → 1
 assign [class="Chromium-browser"] → 1
 assign [class="Doublecmd"] → 2
 assign [class="Pcmanfm"] → 2
@@ -202,19 +270,19 @@ assign [class="translate.google.com"] → T:
 assign [class="heidisql.exe"] → SQL
 assign [class="Sublime_text"] → Sublime-text
 assign [class="Postman"] → Postman
-assign [class="Slack"] → Slack
+#assign [class="Slack"] → Slack
 
 bindsym $mod+F9 exec dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.Suspend" boolean:true
 bindsym $mod+F8 exec dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.Reboot" boolean:true
 bindsym $mod+F7 exec dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.PowerOff" boolean:true
-bindsym $mod+F4 exec sudo python /home/izot/_SOFT/reset_usb.py
+#bindsym $mod+F4 exec sudo python /home/izot/_SOFT/reset_usb.py
 
 bindsym $mod+Control+s workspace Skype
 bindsym $mod+Control+z workspace PyCharm
-bindsym $mod+Control+v workspace Vlc
-bindsym $mod+Control+t workspace Mail
+#bindsym $mod+Control+v workspace Vlc
+#bindsym $mod+Control+t workspace Mail
 bindsym $mod+Control+a workspace Sublime-text
-bindsym $mod+Control+d workspace Slack
+#bindsym $mod+Control+d workspace Slack
 bindsym $mod+Shift+p move container to workspace PyCharm
 exec setxkbmap -option grp:switch,grp:alt_shift_toggle us,ru
 
@@ -241,10 +309,65 @@ mode "resize" {
         bindsym Escape mode "default"
 }
 
+mode "shoice" {
+        bindsym q exec wmctrl -a Google; mode "default"
+	bindsym w exec wmctrl -a 'Mozilla Firefox'; mode "default"
+
+	bindsym s exec wmctrl -a 'socmonitor [~/Documents/'; mode "default"
+
+        bindsym Return mode "default"
+        bindsym Escape mode "default"
+}
+
 bindsym $mod+r mode "resize"
+bindsym Mod1+space mode "shoice"
 
 bar {
-        status_command i3status
-        position          top
-        tray_output primary
+    font pango:DejaVu Sans Mono, FontAwesome 12
+    position top
+    tray_padding 3
+    status_command /usr/bin/i3status-rs ~/.config/i3/status.toml
+    colors {
+        separator #666666
+        background #222222
+        statusline #dddddd
+        focused_workspace #0388CC #0388CC #ffffff
+        active_workspace #333333 #333333 #ffffff
+        inactive_workspace #333333 #333333 #888888
+        urgent_workspace #2f343a #900000 #ffffff
+    }
 }
+
+gaps inner 9
+gaps outer 10
+workspace Skype gaps inner 20
+workspace Skype gaps outer 30
+
+exec google-chrome
+exec subl
+exec diodon
+exec pcmanfm
+exec /home/izot/Documents/pycharm-2018.1.4/bin/pycharm.sh
+exec feh --bg-scale /home/izot/Downloads/daylight-forest-glossy-443446.jpg
+exec --no-startup-id nm-applet
+exec --no-startup-id variety
+exec --no-startup-id skypeforlinux
+exec --no-startup-id /home/izot/.local/share/virtualenvs/web_panel_django197-ssh-manager-Kx1vQdSE/bin/python /home/izot/Documents/_HOME/web_panel_django197-ssh-manager/manage.py runserver 127.0.0.1:8006
+
+#bindsym --whole-window Ctrl+button1 workspace $ws1
+#bindsym --whole-window Ctrl+button3 workspace $pycharm
+
+#bindsym --whole-window Shift+button1 workspace $ws1
+#bindsym --whole-window Shift+button3 workspace $subl
+
+
+#bindsym --whole-window Mod1+button1 workspace $pycharm
+#bindsym --whole-window Mod1+button3 workspace $ws2
+
+bindsym --whole-window KP_Insert workspace $slack
+
+bindsym --whole-window KP_Prior exec pactl move-sink-input 1 1
+bindsym --whole-window KP_Up exec pactl move-sink-input 1 0
+
+workspace_layout stacking
+title_align center
