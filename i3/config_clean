@@ -1,140 +1,143 @@
-
-# ////////////////////////////////////////// Start variable //////////////////////////////////////////
-
-set $mainscreen eDP-1
-set $sidescreen DP-1-3
+# ///////////////////////////////////////////// Init vars /////////////////////////////////////////////
 set $mod Mod4
+set $keyboardswitch exec setxkbmap -layout us,ru, -option grp:alt_shift_toggle
+set $play && play /home/izot/Downloads/Bfxr/briefcase-lock-10.wav
+set $ws1  "1"
+set $ws2  "2"
+set $ws3  "3"
+set $ws4  "4"
+set $ws5  "5"
+set $ws6  "6"
+set $ws7  "7"
+set $ws8  "8"
+set $ws9  "9"
+set $pycharm  "/home/izot/Documents/pycharm-2018.1.4/bin/pycharm.sh"
+set $skype  "Skype"
+set $subl  "Sublime-text"
+set $vga0  "VGA-0"
+set $hdm0  "HDMI-A-0"
+set $dp0  "DisplayPort-0"
 
+# /////////////////////////////////////////////// Main ///////////////////////////////////////////////
+
+font pango:DejaVu Sans Mono, FontAwesome 12
 floating_modifier $mod
 focus_follows_mouse no
+gaps inner 9
+gaps outer 10
+workspace Skype gaps inner 20
+workspace Skype gaps outer 30
+workspace_layout stacking
+title_align center
 
-font pango:monospace 13
+# ///////////////////////////////////////////// Hot keys /////////////////////////////////////////////
 
-# ///////////////////////////////////////// Main key bindings /////////////////////////////////////////
-
+bindsym $mod+Return exec sakura -e /usr/bin/fish
 bindsym Mod4+Shift+q kill
-bindsym $mod+d exec dmenu_run
+bindsym --whole-window Ctrl+button2 kill
+bindsym F9 exec /home/izot/Documents/_GIT/test_python3/test01.py
+
+bindsym Mod4+Shift+c reload
+bindsym Mod4+Shift+r restart
+bindsym Mod4+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+
 bindsym $mod+j focus left
 bindsym $mod+k focus down
 bindsym $mod+l focus up
 bindsym $mod+semicolon focus right
+
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
 bindsym $mod+Up focus up
 bindsym $mod+Right focus right
+
 bindsym $mod+Shift+j move left
 bindsym $mod+Shift+k move down
 bindsym $mod+Shift+l move up
 bindsym $mod+Shift+semicolon move right
+
 bindsym $mod+Shift+Left move left
 bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
+
 bindsym $mod+h split h
 bindsym $mod+v split v
 bindsym $mod+f fullscreen toggle
-bindsym $mod+s layout stacking
 bindsym $mod+w layout tabbed
 bindsym $mod+e layout toggle split
+
 bindsym $mod+Shift+space floating toggle
 bindsym $mod+space focus mode_toggle
-bindsym $mod+a focus parent
-bindsym $mod+Ctrl+k move workspace to output right
-bindsym $mod+Ctrl+j move workspace to output left
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
-bindsym $mod+Shift+minus move scratchpad, move position 0 0, resize set 1366 768;
-bindsym $mod+Shift+c reload
-bindsym $mod+Shift+r restart
-bindsym $mod+r mode "resize"
-bindsym F12 scratchpad show
 
-# ////////////////////////////////////////////// Second //////////////////////////////////////////////
+bindsym $mod+F1 exec /home/izot/Documents/_GIT/test_python3/web_app/MegadonNotesServer.py
+bindsym $mod+F2 exec /home/izot/Documents/_GIT/test_python3/web_app/Utils.py
 
+bindsym $mod+Shift+Return exec pcmanfm $play
+bindsym $mod+Ctrl+Return exec gksu pcmanfm $play
+bindsym $mod+grave exec wmctrl -a Google $play
+bindsym Control+grave scratchpad show
+bindsym $mod+z exec wmctrl -a 'Mozilla Firefox' $play
+bindsym $mod+s exec wmctrl -a 'Skype'
+bindsym $mod+x exec wmctrl -a 'Telegram '
+bindsym F7 exec x-terminal-emulator --class FloatTerminal
+bindsym $mod+Ctrl+b exec sakura --class FloatTerminal
 bindsym F1 exec rofi -show run -bg #222222 -fg #888888 -hlbg #285577 -hlfg #ffffff
 bindsym F2 exec rofi -show window -bg #222222 -fg #888888 -hlbg #285577 -hlfg #ffffff
-bindsym $mod+Return exec sakura
-bindsym $mod+Mod1+Return exec sakura --colorset 1 --class floatingVim
-bindsym $mod+Shift+Return exec pcmanfm
-bindsym $mod+Ctrl+Return exec gksu pcmanfm
-bindsym $mod+F1 exec sakura -e "fish"
-bindsym $mod+Shift+s exec xfce4-screenshooter
-bindsym $mod+Shift+t exec google-chrome --app=http://127.0.0.1:8005/textf/
-bindsym $mod+F12 exec google-chrome --app=https://translate.google.com/
-bindsym $mod+F10 exec google-chrome --app=https://outlook.office365.com/owa/?path=/mail/inbox
-bindsym $mod+F2 exec /opt/cisco/anyconnect/bin/vpnui
+bindsym $mod+Shift+s exec flameshot gui $play
+bindsym $mod+q exec rofi -show window -bg #222222 -fg #888888 -hlbg #285577 -hlfg #ffffff
+
+bindsym $mod+F12 exec google-chrome --app=https://translate.google.com/ --class FloatTerminal
 bindsym $mod+F11 exec google-chrome --incognito --app=https://google.com/
-bindsym $mod+F5 exec chromium-browser --remote-debugging-port=1337
-exec setxkbmap -option grp:switch,grp:alt_shift_toggle us,ru
 
-# ///////////////////////////////////////////// Workspace /////////////////////////////////////////////
+bindsym $mod+Shift+minus move scratchpad, move position 0 0, resize set 1366 768;
+bindsym F12 scratchpad show
 
-bindsym $mod+1 workspace 1
-bindsym $mod+2 workspace 2
-bindsym $mod+3 workspace 3
-bindsym $mod+4 workspace 4
-bindsym $mod+5 workspace 5
-bindsym $mod+6 workspace 6
-bindsym $mod+7 workspace 7
-bindsym $mod+8 workspace 8
-bindsym $mod+9 workspace 9
-bindsym $mod+0 workspace 10
+bindsym $mod+F9 exec dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.Suspend" boolean:true
+bindsym $mod+F8 exec dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.Reboot" boolean:true
+bindsym $mod+F7 exec dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.PowerOff" boolean:true
+bindsym $mod+F4 exec i3lock -n
 
-# /////////////////////////////////////////// Move hot key ///////////////////////////////////////////
+#bindsym --whole-window Ctrl+button1 workspace $ws1
+#bindsym --whole-window Ctrl+button3 workspace $pycharm
 
-bindsym $mod+Shift+1 move container to workspace 1
-bindsym $mod+Shift+2 move container to workspace 2
-bindsym $mod+Shift+3 move container to workspace 3
-bindsym $mod+Shift+4 move container to workspace 4
-bindsym $mod+Shift+5 move container to workspace 5
-bindsym $mod+Shift+6 move container to workspace 6
-bindsym $mod+Shift+7 move container to workspace 7
-bindsym $mod+Shift+8 move container to workspace 8
-bindsym $mod+Shift+9 move container to workspace 9
-bindsym $mod+Shift+0 move container to workspace 10
-bindsym $mod+Shift+s move container to workspace Skype
-bindsym $mod+Shift+p move container to workspace PyCharm
+#bindsym --whole-window Shift+button1 workspace $ws1
+#bindsym --whole-window Shift+button3 workspace $subl
 
-# ////////////////////////////////////////////// Startup //////////////////////////////////////////////
 
-exec --no-startup-id nm-applet
-exec compton -f
-exec_always --no-startup-id /home/izot/Documents/jetbrains-toolbox-1.9.3935/jetbrains-toolbox
+#bindsym --whole-window Mod1+button1 workspace $pycharm
+#bindsym --whole-window Mod1+button3 workspace $ws2
 
-# ////////////////////////////////////////////// i3-gaps //////////////////////////////////////////////
+bindsym --whole-window KP_Insert workspace $slack
 
-gaps inner 10
-gaps outer 10
+bindsym --whole-window KP_Prior exec pactl move-sink-input 1 1
+bindsym --whole-window KP_Up exec pactl move-sink-input 1 0
 
-# //////////////////////////////////////////// Move class ////////////////////////////////////////////
+# //////////////////////////////////////////// Workspaces ////////////////////////////////////////////
 
-for_window [class="^.*"] border pixel 3
-for_window [title=".*Почта —.*"] move to workspace "- EMAIL -"
-for_window [title=".*pgAdmin.*"] move to workspace "- DB -"
-for_window [title=".*DevTools.*"] move to workspace "- DEV TOOLS -"
-for_window [title=".*Cisco AnyConnect.*"] floating enable
-for_window [title=".*JetBrains Toolbox.*"] floating enable
-for_window [title=".*HipChat.*"] move to workspace Skype
-for_window [class="^floatingVim$"] floating enable
-for_window [class="(?i)gnome-calculator"] floating enable
-for_window [class="Pluma"] floating enable
-for_window [class="Tk"] floating enable
-for_window [class="Leafpad"] floating enable
-for_window [class="Firefox" instance="Dialog"] floating enable
-for_window [class="Firefox" instance="Extension"] floating enable
-for_window [class="mpv"] floating enable
-for_window [class="Telegram"] floating enable; border none
-for_window [class="shadowsocks-qt5"] floating enable
-for_window [class="VirtualBox"] floating enable
-for_window [class="Gdebi-gtk"] floating enable
-for_window [class="XCalc"] floating enable
-for_window [class="feh"] floating enable
-for_window [class="Pim"] floating enable
-for_window [title="Run - hw"] move to workspace "DEBUG"
+bindsym $mod+1 workspace $ws1
+bindsym $mod+2 workspace $ws2
+bindsym $mod+3 workspace $ws3
+bindsym $mod+4 workspace $ws4
+bindsym $mod+5 workspace $ws5
+bindsym $mod+6 workspace $ws6
+bindsym $mod+7 workspace $ws7
+bindsym $mod+8 workspace $ws8
+bindsym $mod+9 workspace $ws9
 
-# /////////////////////////////////////////// Assign window ///////////////////////////////////////////
+bindsym $mod+Shift+1 move container to workspace $ws1
+bindsym $mod+Shift+2 move container to workspace $ws2
+bindsym $mod+Shift+3 move container to workspace $ws3
+bindsym $mod+Shift+4 move container to workspace $ws4
+bindsym $mod+Shift+5 move container to workspace $ws5
+bindsym $mod+Shift+6 move container to workspace $ws6
+bindsym $mod+Shift+7 move container to workspace $ws7
+bindsym $mod+Shift+8 move container to workspace $ws8
+bindsym $mod+Shift+9 move container to workspace $ws9
 
-assign [class="^Firefox$"] → 1
+assign [class="^Firefox$"] → 6
 assign [class="^google-chrome$"] → 1
+assign [class="Google-chrome"] → 1
 assign [class="Chromium-browser"] → 1
 assign [class="Doublecmd"] → 2
 assign [class="Pcmanfm"] → 2
@@ -148,72 +151,69 @@ assign [class="translate.google.com"] → T:
 assign [class="heidisql.exe"] → SQL
 assign [class="Sublime_text"] → Sublime-text
 assign [class="Postman"] → Postman
-assign [class="Slack"] → Slack
 
-# /////////////////////////////////////////// Switch window ///////////////////////////////////////////
-
-bindsym $mod+grave exec wmctrl -a Google
-bindsym $mod+z exec wmctrl -a 'Mozilla Firefox'
-
-# //////////////////////////////////////////// System key ////////////////////////////////////////////
-
-bindsym $mod+F9 exec dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.Suspend" boolean:true
-bindsym $mod+F8 exec dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.Reboot" boolean:true
-bindsym $mod+F7 exec dbus-send --system --print-reply --dest=org.freedesktop.login1 /org/freedesktop/login1 "org.freedesktop.login1.Manager.PowerOff" boolean:true
-bindsym $mod+F4 exec i3lock -n
-
-# ////////////////////////////////////////// Desktop hot key //////////////////////////////////////////
+bindsym $mod+Ctrl+k move workspace to output right
+bindsym $mod+Ctrl+j move workspace to output left
 
 bindsym $mod+Control+s workspace Skype
 bindsym $mod+Control+z workspace PyCharm
-bindsym $mod+Control+v workspace Vlc
-bindsym $mod+Control+t workspace Mail
 bindsym $mod+Control+a workspace Sublime-text
-bindsym $mod+Control+d workspace Slack
+bindsym $mod+Shift+p move container to workspace PyCharm
 
-# ////////////////////////////////////////////// New era //////////////////////////////////////////////
+# //////////////////////////////////////////// On startup ////////////////////////////////////////////
 
-client.focused            #3daee9 #3daee9 #ffffff #2e9ef4
-client.focused_inactive   #1cdc9a #1cdc9a #ffffff #484e50
-client.unfocused          #4d4d4d #4d4d4d #ffffff #292d2e
-client.urgent             #2f343a #900000 #ffffff #900000
+$keyboardswitch
+exec_always xrandr --output DisplayPort-1 --off --output DisplayPort-0 --primary --mode 1920x1080 --pos 0x0 --rotate normal --output DisplayPort-2 --off --output DVI-D-0 --off --output HDMI-A-0 --mode 1920x1080 --pos 1920x0 --rotate normal
+exec_always compton -f
 
-# ///////////////////////////////////////// Replace wokspace /////////////////////////////////////////
+exec_always i3-msg "workspace $ws1, move workspace to output $dp0"
+exec_always i3-msg "workspace 2, move workspace to output $dp0"
+exec_always i3-msg "workspace 6, move workspace to output $hdm0"
+exec_always i3-msg "workspace Sublime-text, move workspace to output $hdm0"
+exec_always i3-msg "workspace Skype, move workspace to output $hdm0"
+exec_always i3-msg "workspace PyCharm, move workspace to output $dp0"
+exec_always i3-msg "workspace $slack, move workspace to output $dp0"
 
-exec_always i3-msg "workspace 1, move workspace to output DP-1-3"
-exec_always i3-msg "workspace 2, move workspace to output DP-1-3"
-exec_always i3-msg "workspace 3, move workspace to output DP-1-3"
-exec_always i3-msg "workspace 4, move workspace to output DP-1-3"
-exec_always i3-msg "workspace Sublime-text, move workspace to output eDP-1"
-exec_always i3-msg "workspace Postman, move workspace to output eDP-1"
-
-# ////////////////////////////////////////// Lock or Reboot //////////////////////////////////////////
-
-set $Locker i3lock -i ~/.i3lock.jpg && sleep 1
-set $mode_system System (l) lock, (e) logout, (s) suspend, (r) reboot, \
-(Shift+s) shutdown
-mode "$mode_system" {
-    bindsym l exec --no-startup-id $Locker, mode "default"
-    bindsym e exec --no-startup-id i3-msg exit, mode "default"
-    bindsym s exec --no-startup-id $Locker && sync && systemctl suspend, \
-    mode "default"
-    bindsym r exec --no-startup-id systemctl reboot, mode "default"
-    bindsym Shift+s exec --no-startup-id systemctl poweroff -i, mode "default"
-    # back to normal: Enter or Escape
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
-}
-bindsym $mod+Pause mode "$mode_system"
-
-workspace 1 output PRIMARY
-workspace 2 output PRIMARY
-workspace 3 output PRIMARY
-workspace 4 output PRIMARY
-workspace 8 output SECOND
-workspace 9 output SECOND
-workspace 10 output SECOND
+exec_always pulseaudio -D
+exec google-chrome
+exec subl
+exec diodon
+exec pcmanfm
+exec $pycharm
+#exec feh --bg-scale /home/izot/Downloads/daylight-forest-glossy-443446.jpg
+exec --no-startup-id nm-applet
+exec --no-startup-id variety
+exec --no-startup-id skypeforlinux
+exec --no-startup-id /home/izot/.local/share/virtualenvs/web_panel_django197-ssh-manager-Kx1vQdSE/bin/python /home/izot/Documents/_HOME/web_panel_django197-ssh-manager/manage.py runserver 127.0.0.1:8006
 
 
+# /////////////////////////////////////////// Window rules ///////////////////////////////////////////
+
+for_window [class="^.*"] border pixel 3
+for_window [title=".*DevTools.*"] move to workspace "5", focus, move workspace to output HDMI-0
+for_window [title=".*Port forward.*"] move to workspace "Forward", move workspace to output HDMI-0
+for_window [title=".*file-roller.*"] floating enable
+
+for_window [class="(?i)gnome-calculator"] floating enable
+for_window [class="Pluma"] floating enable
+for_window [class="Tk"] floating enable
+for_window [class="X-terminal-emulator"] floating enable
+for_window [class="Geany"] floating enable
+for_window [class="Leafpad"] floating enable
+for_window [class="Firefox" instance="Dialog"] floating enable
+for_window [class="Firefox" instance="Extension"] floating enable
+for_window [class="mpv"] floating enable
+for_window [class="shadowsocks-qt5"] floating enable
+for_window [class="Gdebi-gtk"] floating enable
+for_window [class="XCalc"] floating enable
+for_window [class="feh"] floating enable
+for_window [class="Pim"] floating enable
+for_window [title="Run - hw"] move to workspace "DEBUG"
+for_window [title="MegadonNotesServer1"] move to workspace "Notes"
+for_window [title="Utils1"] move to workspace "Utils"
+for_window [class="FloatTerminal"] floating enable
+
+# /////////////////////////////////////////////// Mods ///////////////////////////////////////////////
 
 mode "resize" {
         bindsym j resize shrink width 10 px or 10 ppt
@@ -240,29 +240,23 @@ mode "shoice" {
         bindsym Escape mode "default"
 }
 
-# ///////////////////////////////////////////// Bar area /////////////////////////////////////////////
+bindsym $mod+r mode "resize"
+bindsym Mod1+space mode "shoice"
+
+# /////////////////////////////////////////// Bar settings ///////////////////////////////////////////
 
 bar {
-        status_command py3status
-        position          top
-        tray_output primary
+    font pango:DejaVu Sans Mono, FontAwesome 12
+    position top
+    tray_padding 3
+    status_command /usr/bin/i3status-rs ~/.config/i3/status.toml
+    colors {
+        separator #666666
+        background #222222
+        statusline #dddddd
+        focused_workspace #0388CC #0388CC #ffffff
+        active_workspace #333333 #333333 #ffffff
+        inactive_workspace #333333 #333333 #888888
+        urgent_workspace #2f343a #900000 #ffffff
+    }
 }
-
-# ////////////////////////////////////////// Mouse settings //////////////////////////////////////////
-
-#bindsym --whole-window Ctrl+button1 workspace $ws1
-#bindsym --whole-window Ctrl+button3 workspace $pycharm
-
-#bindsym --whole-window Shift+button1 workspace $ws1
-#bindsym --whole-window Shift+button3 workspace $subl
-
-
-bindsym --whole-window Mod1+button1 workspace $pycharm
-bindsym --whole-window Mod1+button3 workspace $ws2
-
-bindsym --whole-window KP_Insert workspace $slack
-
-bindsym --whole-window KP_Prior exec pactl move-sink-input 1 1
-bindsym --whole-window KP_Up exec pactl move-sink-input 1 0
-
-# /////////////////////////////////////////// Other things ///////////////////////////////////////////
