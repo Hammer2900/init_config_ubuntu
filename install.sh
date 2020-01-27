@@ -1,14 +1,11 @@
 #!/bin/bash
 
-echo "....................................... Init git information ......................................."
-git config --global user.name "Tsybulskyi Evhenyi"
-git config --global user.email etsy2900@gmail.com
-git config --global core.editor nano
+echo "................................................ Exa ................................................"
+wget -P /tmp/ https://github.com/ogham/exa/releases/download/v0.9.0/exa-linux-x86_64-0.9.0.zip
+unzip /tmp/exa-linux-x86_64-0.9.0.zip -d /tmp/
+sudo cp /tmp/exa-linux-x86_64 /usr/bin/
 
-echo "....................................... Install all programms ......................................."
-sudo apt install mc fish ranger rofi compton git i3-wm i3lock i3blocks jq i3lock-fancy pcmanfm htop sakura feh python-pip lxappearance vim sublime-text skypeforlinux telegram-desktop python-dev -y
-pip install pipenv
-
-echo "...................................... Copy configs to folder ......................................"
-cp -r i3/ ~/.config/
-ranger --copy-config=all
+echo "................................................ Bat ................................................"
+wget -P /tmp/ https://github.com/sharkdp/bat/releases/download/v0.12.1/bat-v0.12.1-x86_64-unknown-linux-gnu.tar.gz
+tar -xzvf /tmp/bat-v0.12.1-x86_64-unknown-linux-gnu.tar.gz -C /tmp
+sudo cp /tmp/bat-v0.12.1-x86_64-unknown-linux-gnu/bat /usr/bin/
