@@ -14,3 +14,13 @@ echo "............................................... Broot ....................
 wget -P /tmp/ https://github.com/Canop/broot/releases/download/v0.12.1/release.zip
 unzip /tmp/release.zip -d /tmp/
 sudo cp /tmp/build/x86_64-linux/broot /usr/bin/
+
+echo "............................................... Ctop ..............................................."
+wget -P /tmp/ https://github.com/bcicen/ctop/releases/download/v0.7.3/ctop-0.7.3-linux-amd64
+sudo chmod +x /tmp/ctop-0.7.3-linux-amd64
+sudo cp /tmp/ctop-0.7.3-linux-amd64 /usr/bin/ctop
+
+echo "................................................ Lf ................................................"
+wget -P /tmp/ https://github.com/gokcehan/lf/releases/download/r13/lf-linux-amd64.tar.gz
+tar -xzvf /tmp/lf-linux-amd64.tar.gz -C /tmp
+sudo cp /tmp/lf /usr/bin/lf
