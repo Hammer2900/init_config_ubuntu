@@ -3,7 +3,7 @@
 echo "................................................ Exa ................................................"
 wget -P /tmp/ https://github.com/ogham/exa/releases/download/v0.9.0/exa-linux-x86_64-0.9.0.zip
 unzip /tmp/exa-linux-x86_64-0.9.0.zip -d /tmp/
-sudo cp /tmp/exa-linux-x86_64 /usr/bin/
+sudo cp /tmp/exa-linux-x86_64 /usr/bin/exa
 
 echo "................................................ Bat ................................................"
 wget -P /tmp/ https://github.com/sharkdp/bat/releases/download/v0.12.1/bat-v0.12.1-x86_64-unknown-linux-gnu.tar.gz

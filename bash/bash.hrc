@@ -1,6 +1,5 @@
-# Django fast command
-alias pmma='python manage.py makemigrations'
-alias pmmi='python manage.py migrate'
+# Variables
+export EDITOR='nano'
 
 # Pip: Help fast functions
 alias pipi27='pipenv --python 2.7 && pipenv shell'
@@ -25,4 +24,12 @@ alias dprune='docker system prune'
 alias ddd='dbxfs test'
 alias pi='ping 8.8.8.8'
 
-source /home/izot/aws_time_creds
+# Main
+alias cp="cp -i"
+alias df='df -h'
+alias free='free -m'
+
+alias ls='exa -al --color=always --group-directories-first'
+alias la='exa --tree --level=2'
+alias ll='exa -l --color=always --group-directories-first'
+alias lt='exa -aT --color=always --group-directories-first'
