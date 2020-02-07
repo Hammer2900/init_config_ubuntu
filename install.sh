@@ -24,3 +24,8 @@ echo "................................................ Lf ......................
 wget -P /tmp/ https://github.com/gokcehan/lf/releases/download/r13/lf-linux-amd64.tar.gz
 tar -xzvf /tmp/lf-linux-amd64.tar.gz -C /tmp
 sudo cp /tmp/lf /usr/bin/lf
+
+echo "............................................... Micro ..............................................."
+wget -P /tmp/ https://github.com/zyedidia/micro/releases/download/nightly/micro-2.0.0-rc3.dev.30-linux64.tar.gz
+tar -xzvf /tmp/micro-2.0.0-rc3.dev.30-linux64.tar.gz -C /tmp
+sudo cp /tmp/micro-2.0.0-rc3.dev.30/micro /usr/bin/micro
