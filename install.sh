@@ -21,7 +21,7 @@ sudo chmod +x /tmp/ctop-0.7.3-linux-amd64
 sudo cp /tmp/ctop-0.7.3-linux-amd64 /usr/bin/ctop
 
 echo "................................................ Lf ................................................"
-wget -P /tmp/ https://github.com/gokcehan/lf/releases/download/r17/lf-linux-arm64.tar.gz
+wget -P /tmp/ https://github.com/gokcehan/lf/releases/download/r17/lf-linux-amd64.tar.gz
 tar -xzvf /tmp/lf-linux-amd64.tar.gz -C /tmp
 sudo cp /tmp/lf /usr/bin/lf
 
