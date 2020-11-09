@@ -21,7 +21,7 @@ sudo chmod +x /tmp/ctop-0.7.3-linux-amd64
 sudo cp /tmp/ctop-0.7.3-linux-amd64 /usr/bin/ctop
 
 echo "................................................ Lf ................................................"
-wget -P /tmp/ https://github.com/gokcehan/lf/releases/download/r13/lf-linux-amd64.tar.gz
+wget -P /tmp/ https://github.com/gokcehan/lf/releases/download/r17/lf-linux-arm64.tar.gz
 tar -xzvf /tmp/lf-linux-amd64.tar.gz -C /tmp
 sudo cp /tmp/lf /usr/bin/lf
 
@@ -34,3 +34,12 @@ echo "............................................. Alacritty ..................
 wget -P /tmp/ https://github.com/alacritty/alacritty/releases/download/v0.4.1/Alacritty-v0.4.1-ubuntu_18_04_amd64.tar.gz
 tar -xzvf /tmp/v0.4.1/Alacritty-v0.4.1-ubuntu_18_04_amd64.tar.gz -C /tmp
 sudo cp /tmp/alacritty /usr/bin/alacritty
+
+echo "........................................... Disc utility ..........................................."
+wget -P /tmp/ https://github.com/muesli/duf/releases/download/v0.5.0/duf_0.5.0_linux_amd64.deb
+sudo dpkg -i /tmp/duf_0.5.0_linux_amd64.deb
+
+echo ".............................................. Zenith .............................................."
+wget -P /tmp/ https://github.com/bvaisvil/zenith/releases/download/0.11.0/zenith.x86_64-unknown-linux-musl.tgz
+tar -xzvf /tmp/zenith.x86_64-unknown-linux-musl.tgz -C /tmp
+sudo cp /tmp/zenith /usr/bin/zenith
