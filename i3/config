@@ -21,7 +21,11 @@ set $ws6  "6"
 set $ws7  "7"
 set $ws8  "8"
 set $ws9  "9"
-set $pycharm_bin  "/home/izot/Documents/pycharm-2018.1.4/bin/pycharm.sh"
+set $polybar  "/home/izot/.config/polybar/launch.sh &"
+set $pycharm_bin  "/mnt/w1/jek/Documents/pycharm-community-2020.3.3/bin/pycharm.sh"
+#set $monitor_setup  "xrandr --output DisplayPort-1 --off --output DisplayPort-0 --primary --mode 1920x1080 --pos 0x0 --rotate normal --output DisplayPort-2 --off --output DVI-D-0 --off --output HDMI-A-0 --mode 1920x1080 --pos 1920x0 --rotate normal"
+set $monitor_setup  "xrandr --output DisplayPort-1 --off --output DisplayPort-0 --mode 1920x1080 --pos 1928x0 --rotate normal --output DisplayPort-2 --primary --mode 1920x1080 --pos 0x0 --rotate normal --output DVI-D-0 --off --output HDMI-A-0 --off"
+set $pycharm_ssh_manager  "/mnt/w1/jek/Documents/_VENV/_OLD/web_panel_django197-ssh-manager-Kx1vQdSE/bin/python /home/izot/Documents/_HOME/web_panel_django197-ssh-manager/manage.py runserver 127.0.0.1:8006"
 set $pycharm  "Pycharm"
 set $skype  "Skype"
 set $git  "Git"
@@ -32,8 +36,9 @@ set $subl  "Sublime-text"
 set $vcode  "Visual-Studio-Code"
 set $telegram  "Telegram"
 set $vga0  "VGA-0"
-set $hdm0  "HDMI-A-0"
-set $dp0  "DisplayPort-0"
+#set $hdm0  "HDMI-A-0"
+set $hdm0  "DisplayPort-0"
+set $dp0  "DisplayPort-2"
 
 # /////////////////////////////////////////////// Main ///////////////////////////////////////////////
 
@@ -50,8 +55,11 @@ title_align center
 
 # ///////////////////////////////////////////// Hot keys /////////////////////////////////////////////
 
-bindsym $mod+Return exec "sakura"
+bindsym $mod+Return exec "alacritty"
 bindsym Mod4+Shift+q kill
+bindsym Mod1+space kill
+bindsym Pause kill
+#bindcode 82 exec kill
 bindsym --whole-window Ctrl+button2 kill
 bindsym F9 exec /home/izot/Documents/_GIT/test_python3/i3/test01.py
 
@@ -91,23 +99,23 @@ bindsym $mod+space focus mode_toggle
 bindsym $mod+F1 exec /home/izot/Documents/_GIT/test_python3/web_app/MegadonNotesServer.py
 bindsym $mod+F2 exec /home/izot/Documents/_GIT/test_python3/web_app/Utils.py
 
+bindsym F1 exec rofi -show run -bg #222222 -fg #888888 -hlbg #285577 -hlfg #ffffff
+bindsym F2 exec rofi -show window -bg #222222 -fg #888888 -hlbg #285577 -hlfg #ffffff
+bindsym F7 exec x-terminal-emulator --class FloatTerminal
 bindsym $mod+Shift+Return exec pcmanfm $play
 bindsym $mod+Ctrl+Return exec gksu pcmanfm $play
 bindsym $mod+grave exec wmctrl -a Google $play
-bindsym Control+grave scratchpad show
 bindsym $mod+z exec wmctrl -a 'Mozilla Firefox' $play
 bindsym $mod+s exec wmctrl -a 'Skype'
 bindsym $mod+x exec wmctrl -a 'Telegram '
 bindsym $mod+c exec wmctrl -a 'Visual Studio Code'
-bindsym F7 exec x-terminal-emulator --class FloatTerminal
-bindsym $mod+Ctrl+b exec sakura --class FloatTerminal
-bindsym F1 exec rofi -show run -bg #222222 -fg #888888 -hlbg #285577 -hlfg #ffffff
-bindsym F2 exec rofi -show window -bg #222222 -fg #888888 -hlbg #285577 -hlfg #ffffff
-bindsym $mod+Shift+s exec flameshot gui $play
-bindsym $mod+q exec rofi -show window -bg #222222 -fg #888888 -hlbg #285577 -hlfg #ffffff
+bindsym $mod+Ctrl+b exec sakura -x mc
+bindsym $mod+Shift+s exec flameshot gui
+bindsym $mod+q exec wmctrl -a 'Slack'
+bindsym Control+grave scratchpad show
 
-bindsym $mod+F12 exec google-chrome --app=https://translate.google.com/ --class FloatTerminal
-bindsym $mod+F11 exec google-chrome --incognito --app=https://google.com/
+#bindsym $mod+F12 exec google-chrome --app=https://translate.google.com/
+#bindsym $mod+F11 exec google-chrome --incognito --app=https://google.com/
 
 bindsym $mod+Shift+minus move scratchpad, move position 0 0, resize set 1366 768;
 bindsym F12 scratchpad show
@@ -131,6 +139,8 @@ bindsym --whole-window KP_Insert workspace $slack
 
 bindsym --whole-window KP_Prior exec pactl move-sink-input 1 1
 bindsym --whole-window KP_Up exec pactl move-sink-input 1 0
+
+#bindcode 82 exec wmfocus
 
 # //////////////////////////////////////////// Workspaces ////////////////////////////////////////////
 
@@ -162,15 +172,19 @@ assign [class="Doublecmd"] → $ws2
 assign [class="Pcmanfm"] → $ws2
 assign [class="Spacefm"] → $ws3
 assign [class="^Skype$"] → Skype
+assign [class="Slack"] → Slack
+assign [class="Godot"] → Godot
 assign [class="Timedoctorpro.run"] → Vlc
 assign [class="jetbrains-pycharm"] → $pycharm
 assign [class="translate.google.com"] → T:
 assign [class="heidisql.exe"] → SQL
+assign [class="Steam"] → Steam
 assign [class="Sublime_text"] → $subl
 assign [class="Postman"] → Postman
 assign [title=".*Visual Studio Code"] → $vcode
 assign [title="Telegram.*"] → $telegram
 assign [title="Terminal - test_python3"] → $telegram
+assign [title="GraphicsGale Portable ver.2.08.21"] → Gale
 
 bindsym $mod+Ctrl+k move workspace to output right
 bindsym $mod+Ctrl+j move workspace to output left
@@ -184,8 +198,9 @@ bindsym $mod+Shift+p move container to workspace PyCharm
 
 exec $keyboardswitch_us
 
-exec_always xrandr --output DisplayPort-1 --off --output DisplayPort-0 --primary --mode 1920x1080 --pos 0x0 --rotate normal --output DisplayPort-2 --off --output DVI-D-0 --off --output HDMI-A-0 --mode 1920x1080 --pos 1920x0 --rotate normal
+exec_always $monitor_setup
 exec_always compton -f
+exec_always telegram-desktop
 exec_always i3-msg "workspace $ws1, move workspace to output $dp0"
 exec_always i3-msg "workspace 8, move workspace to output $hdm0"
 exec_always i3-msg "workspace 9, move workspace to output $hdm0"
@@ -194,22 +209,27 @@ exec_always i3-msg "workspace 6, move workspace to output $hdm0"
 exec_always i3-msg "workspace Sublime-text, move workspace to output $hdm0"
 exec_always i3-msg "workspace Skype, move workspace to output $hdm0"
 exec_always i3-msg "workspace Telegram, move workspace to output $hdm0"
+exec_always i3-msg "workspace Godot, move workspace to output $hdm0"
 exec_always i3-msg "workspace PyCharm, move workspace to output $dp0"
-
+exec_always i3-msg "workspace Gale, move workspace to output $dp0"
+exec_always --no-startup-id $polybar
 exec_always pulseaudio -D
-exec google-chrome
-exec firefox
-exec Telegram
-exec subl
-exec diodon
-exec pcmanfm
-exec $pycharm_bin
-#exec feh --bg-scale /home/izot/Downloads/daylight-forest-glossy-443446.jpg
+
+exec --no-startup-id google-chrome
+exec --no-startup-id espanso start
+exec --no-startup-id firefox
+exec --no-startup-id Telegram
+exec --no-startup-id subl
+exec --no-startup-id slack
+exec --no-startup-id diodon
+exec --no-startup-id pcmanfm
+exec --no-startup-id $pycharm_bin
+exec --no-startup-id flameshot
 exec --no-startup-id espanso start
 exec --no-startup-id nm-applet
 exec --no-startup-id variety
 exec --no-startup-id skypeforlinux
-exec --no-startup-id /home/izot/.local/share/virtualenvs/web_panel_django197-ssh-manager-Kx1vQdSE/bin/python /home/izot/Documents/_HOME/web_panel_django197-ssh-manager/manage.py runserver 127.0.0.1:8006
+exec --no-startup-id $pycharm_ssh_manager
 
 
 # /////////////////////////////////////////// Window rules ///////////////////////////////////////////
@@ -236,7 +256,11 @@ for_window [class="Pim"] floating enable
 for_window [title="Run - hw"] move to workspace "DEBUG"
 for_window [title="MegadonNotesServer1"] move to workspace "Notes"
 for_window [title="Utils1"] move to workspace "Utils"
+for_window [title="Commit Changes"] floating disable
+for_window [title="Push Commits "] floating disable
+for_window [title="Calculator"] floating disable
 for_window [class="FloatTerminal"] floating enable border pixel 3
+for_window [class="jetbrains-pycharm"] floating disable border pixel 4
 
 for_window [class=".*"] title_format "* %title *"
 for_window [title="Terminal - .*"] move to workspace $ws9, focus, move workspace to output $hdm0
@@ -274,23 +298,10 @@ mode "shoice" {
 }
 
 bindsym $mod+r mode "resize"
-bindsym Mod1+space mode "shoice"
+# bindsym Mod1+space mode "shoice"
+
 
 # /////////////////////////////////////////// Bar settings ///////////////////////////////////////////
 
-bar {
-    font pango:DejaVu Sans Mono, FontAwesome 14
-    position top
-    tray_padding 4
-    tray_output $dp0
-    status_command /usr/bin/i3status-rs ~/.config/i3/status.toml
-    colors {
-        separator #666666
-        background #222222
-        statusline #dddddd
-        focused_workspace #0388CC #0388CC #ffffff
-        active_workspace #333333 #333333 #ffffff
-        inactive_workspace #333333 #333333 #888888
-        urgent_workspace #2f343a #900000 #ffffff
-    }
-}
+
+

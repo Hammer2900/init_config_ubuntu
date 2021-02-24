@@ -1,0 +1,457 @@
+[colors]
+background = #282828
+foreground = #ebdbb2
+red        = #fb4934
+green      = #b8bb26
+yellow     = #fabd2f
+blue       = #83a598
+purple     = #d3869b
+teal       = #8ec07c
+orange     = #fe8019
+gray       = #a89984
+
+[bar/top]
+; Size
+;monitor = HDMI-A-0
+monitor = DisplayPort-2
+width  = 100%
+height = 30
+;dpi = 192
+spacing = 1
+
+tray-position = right
+tray-detached = false 
+tray-padding = 3
+
+; Offset
+offset-x = 0%
+offset-y = 0%
+
+; Position
+bottom = false
+
+; Radius
+radius = 0
+
+; Align modules fixed to middle
+fixed-center = true
+
+; Colors
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+; Underline
+;line-size  = 3
+;line-color = ${colors.foreground}
+
+; Border
+border-size  = 0
+border-color = ${colors.yellow}
+
+; Padding
+padding-left  = 0
+padding-right = 0
+
+; Margin of modules
+module-margin-left  = 0
+module-margin-right = 0
+
+; Font
+font-0 = Fira Code: pixelsize=9
+font-1 = FontAwesome5Free:style=Regular:size=12
+font-2 = FontAwesome5Free:style=Solid:size=12
+
+; Modlues
+modules-left   = i3
+modules-center = time date
+modules-right  = usd updates-apt pulseaudio keyboard logout poweroff
+
+; Cursor actions
+cursor-click  = pointer
+cursor-scroll = ns-resize
+
+;separator = *
+
+[bar/bottom]
+; Size
+;monitor = HDMI-A-0
+monitor = DisplayPort-0
+width  = 100%
+height = 30
+;dpi = 192
+spacing = 1
+
+;tray-position = center
+;tray-detached = false 
+;tray-padding = 3
+
+; Offset
+offset-x = 0%
+offset-y = 0%
+
+; Position
+bottom = false
+
+; Radius
+radius = 0
+
+; Align modules fixed to middle
+fixed-center = true
+
+; Colors
+background = ${colors.background}
+foreground = ${colors.foreground}
+
+; Underline
+;line-size  = 3
+;line-color = ${colors.foreground}
+
+; Border
+border-size  = 0
+border-color = ${colors.yellow}
+
+; Padding
+padding-left  = 0
+padding-right = 0
+
+; Margin of modules
+module-margin-left  = 0
+module-margin-right = 0
+
+; Font
+font-0 = Fira Code: pixelsize=9
+font-1 = FontAwesome5Free:style=Regular:size=12
+font-2 = FontAwesome5Free:style=Solid:size=12
+
+; Modlues
+modules-left   = i3
+modules-center = network
+modules-right  = filesystem memory cpu
+
+; Cursor actions
+cursor-click  = pointer
+cursor-scroll = ns-resize
+
+;separator = *
+
+[module/i3]
+type = internal/i3
+pin-workspaces = true
+strip-wsnumbers = true
+label-dimmed-underline = ${root.background}
+
+; Mouse click
+enable-click = true
+
+; Mouse scroll
+enable-scroll = false
+
+; Sort
+index-sort = false
+
+; Display icons
+fuzzy-match = true
+
+; Icons
+ws-icon-0       = Main;
+ws-icon-1       = Terminal;
+ws-icon-2       = Web;
+ws-icon-3       = Program;
+ws-icon-4       = Design;
+ws-icon-default = 
+
+; Focused label
+label-focused            = %icon% %name%
+label-focused-background = ${colors.green}
+label-focused-foreground = ${colors.foreground}
+label-focused-padding    = 2
+
+; Unfocused labels
+label-unfocused            = %icon% %name%
+label-unfocused-foreground = ${colors.foreground}
+label-unfocused-padding    = 2
+
+; Visible labels
+label-visible            = %icon% %name%
+label-visible-foreground = ${colors.foreground}
+label-visible-padding    = 2
+
+; Urgent labels
+label-urgent            = %icon% %name%
+label-urgent-foreground = ${colors.red}
+label-urgent-padding    = 2
+
+;[module/weather]
+;type = custom/script
+
+; Script
+;exec = /home/enindu/.config/polybar/scripts/weather.sh
+
+; Update interval
+;interval = 600
+
+; Label
+;label            = %output%
+;label-foreground = ${colors.foreground}
+;label-padding    = 1
+
+[module/time]
+type = internal/date
+
+; Update interval
+interval = 2.0
+
+; Format
+time = %I:%M%P
+
+; Label
+label            =  %time%
+label-foreground = ${colors.foreground}
+label-padding    = 1
+
+[module/date]
+type = internal/date
+
+; Update interval
+interval = 1.0
+
+; Format
+date = %A, %d %B
+
+; Label
+label            =  %date%
+label-foreground = ${colors.foreground}
+label-padding    = 1
+
+[module/temperature]
+type = internal/temperature
+
+; Label
+label            =  %temperature%
+;label-background = ${colors.purple}
+label-foreground = ${colors.foreground}
+label-padding    = 2
+
+; Warning label
+label-warn            =  %temperature%
+label-warn-background = ${colors.red}
+label-warn-foreground = ${colors.foreground}
+label-warn-padding    = 2
+
+[module/pulseaudio]
+type = internal/pulseaudio
+
+; Volume label
+label-volume            =  %percentage%%
+;label-volume-background = ${colors.blue}
+label-volume-foreground = ${colors.foreground}
+label-volume-padding    = 2
+
+; Muted label
+label-muted            =  Muted
+label-muted-background = ${colors.red}
+label-muted-foreground = ${colors.foreground}
+label-muted-padding    = 2
+
+[module/lock]
+type = custom/text
+
+; Label
+content = 
+;content-background = ${colors.yellow}
+content-foreground = ${colors.foreground}
+content-padding    = 2
+
+; Mouse click
+click-left = slock
+
+[module/logout]
+type = custom/text
+
+; Label
+content            = 
+;content-background = ${colors.green}
+content-foreground = ${colors.foreground}
+content-padding    = 2
+
+; Mouse click
+click-left = i3-msg exit
+
+[module/poweroff]
+type = custom/text
+
+; Label
+content            = 
+;content-background = ${colors.red}
+content-foreground = ${colors.foreground}
+content-padding    = 2
+
+; Mouse click
+click-left = poweroff
+
+[settings]
+screenchange-reload     = true
+;compositing-background = xor
+;compositing-foreground = source
+;compositing-border     = over
+;pseudo-transparency    = false
+
+[global/wm]
+margin-top    = 10
+margin-bottom = 10
+
+[module/cpu]
+type = internal/cpu
+; https://github.com/guisilvano/dotfiles/blob/master/polybar/config#L178
+format-label = internal/cpu
+ramp-coreload-spacing = 1
+ramp-coreload-0 = ▁
+ramp-coreload-1 = ▂
+ramp-coreload-2 = ▃
+ramp-coreload-3 = ▄
+ramp-coreload-4 = ▅
+ramp-coreload-5 = ▆
+ramp-coreload-6 = ▇
+ramp-coreload-7 = █
+; Colors for ramp
+ramp-coreload-0-foreground = #55efc4
+ramp-coreload-1-foreground = #55efc4
+ramp-coreload-2-foreground = #00b894
+ramp-coreload-3-foreground = #00b894
+
+ramp-coreload-4-foreground = #74b9ff
+ramp-coreload-5-foreground = #74b9ff
+
+ramp-coreload-6-foreground = ${colors.blue}
+ramp-coreload-7-foreground = #d63031
+
+interval = 2
+label = " %percentage-sum%%"
+format = <label> <ramp-coreload>
+
+[module/memory]
+type = internal/memory
+interval = 2
+label = " %percentage_used%%"
+format = <label> <ramp-used>
+ramp-used-0 = ▁
+ramp-used-1 = ▂
+ramp-used-2 = ▃
+ramp-used-3 = ▄
+ramp-used-4 = ▅
+ramp-used-5 = ▆
+ramp-used-6 = ▇
+ramp-used-7 = █
+
+[module/filesystem]
+type = internal/fs
+interval = 25
+mount-0 = /
+mount-1 = /home
+label-mounted =  %mountpoint% free: %percentage_free%% of %total%
+label-mounted-padding = 1
+
+[module/keyboard]
+type = internal/xkeyboard
+blacklist-0 = num lock
+blacklist-1 = scroll lock
+
+[module/network]
+type = internal/network
+interface = enp3s0
+; Seconds to sleep between updates
+; Default: 1
+interval = 1.0
+
+; Test connectivity every Nth update
+; A value of 0 disables the feature
+; NOTE: Experimental (needs more testing)
+; Default: 0
+;ping-interval = 3
+
+; @deprecated: Define min width using token specifiers (%downspeed:min% and %upspeed:min%)
+; Minimum output width of upload/download rate
+; Default: 3
+udspeed-minwidth = 5
+
+; Accumulate values from all interfaces
+; when querying for up/downspeed rate
+; Default: false
+accumulate-stats = true
+
+; Consider an `UNKNOWN` interface state as up.
+; Some devices have an unknown state, even when they're running
+; Default: false
+unknown-as-up = true
+; Available tags:
+;   <label-connected> (default)
+;   <ramp-signal>
+format-connected =  <label-connected> 
+format-connected-underline = #92D52C
+
+; Available tags:
+;   <label-disconnected> (default)
+format-disconnected = <label-disconnected>
+
+; Available tags:
+;   <label-connected> (default)
+;   <label-packetloss>
+;   <animation-packetloss>
+format-packetloss = <animation-packetloss> <label-connected>
+
+; All labels support the following tokens:
+;   %ifname%    [wireless+wired]
+;   %local_ip%  [wireless+wired]
+;   %local_ip6% [wireless+wired]
+;   %essid%     [wireless]
+;   %signal%    [wireless]
+;   %upspeed%   [wireless+wired]
+;   %downspeed% [wireless+wired]
+;   %linkspeed% [wired]
+
+; Default: %ifname% %local_ip%
+label-connected = %ifname% %downspeed:% %upspeed:%   
+label-connected-foreground = #eefafafa
+
+; Default: (none)
+label-disconnected = Not Connected
+label-disconnected-foreground = #66ffffff
+
+
+; Only applies if <animation-packetloss> is used
+animation-packetloss-0 = ⚠
+animation-packetloss-0-foreground = #ffa64c
+animation-packetloss-1 = 📶
+animation-packetloss-1-foreground = #000000
+; Framerate in milliseconds
+animation-packetloss-framerate = 500
+
+[module/easteregg-pornhub]
+type = custom/script
+exec = echo " hub "
+interval = 3600
+click-left = "firefox --private-window https://pornhub.com/random" &
+
+format = <label>
+format-prefix = "  Porn "
+format-prefix-foreground = #ffffff
+format-prefix-background = #000000
+
+format-overline = #000000
+format-underline = #000000
+format-foreground = #000000
+format-background = #ffa500
+
+format-suffix = " "
+format-suffix-background = #000000
+format-suffix-foreground = #000000
+
+[module/updates-apt]
+type = custom/script
+exec = /home/izot/.config/polybar/scripts/apts.sh
+interval = 600
+
+[module/usd]
+type = custom/script
+exec = /home/izot/.config/polybar/scripts/privat_usd.sh
+interval = 600
