@@ -1,0 +1,60 @@
+% commands
+
+# atp finde package
+sudo apt list | grep <part_name>
+
+# atp upgrade package
+sudo apt install --only-upgrade <packagename>
+
+# elastic dev finder
+/mnt/w1/jek/TEMP/all_python/.venv38/bin/python /mnt/w1/jek/TEMP/all_python/rofi_experement/cli_elastic_dev_gui.py
+
+# open_vpn3 start
+openvpn3 session-start --config /home/izot/Downloads/Key/evgeny2900_old.ovpn
+
+# open_vpn3 restart
+openvpn3 session-manage --config /home/izot/Downloads/Key/evgeny2900_old.ovpn --restart
+
+# open_vpn3 stop
+openvpn3 session-manage --config /home/izot/Downloads/Key/evgeny2900_old.ovpn --disconnect
+
+# random password
+date +%s | sha256sum | base64 | head -c <simbol_count> ; echo
+
+# set env from file to system
+export $(grep -v '^#' <path_to_file> | xargs -d '\n')
+
+# ping google dns
+ping 8.8.8.8
+
+# creates symbolic link to file
+ln -s <filename> <link>
+
+# copy file or folder to other server
+scp <local_files> <login>@<server_host>:<remote_files>
+
+# make file exec flag
+sudo chmod +x <path_to_file>
+
+# protect ssh key
+sudo chmod 644 <path_to_file>
+
+# write image to flash
+sudo dd bs=4M if=<path_to_image> of=<path_to_flash_drive> status=progress conv=fsync
+
+# folder size
+sudo du -sh <path_folder>
+
+# all services status localhost
+systemctl list-units --type service --all
+
+# all services activate list
+systemctl list-unit-files --type service
+
+# Print all available information
+lsb_release -a
+
+# create env for project
+virtualenv .venv && source .venv/bin/activate && pip install -r <req_file>
+
+$ req_file: ls

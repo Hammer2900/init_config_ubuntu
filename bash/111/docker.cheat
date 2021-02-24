@@ -1,0 +1,36 @@
+% docker
+
+# docker runing containers
+docker ps
+
+# docker stop containers by id
+docker stop <id>
+
+# connect to container
+docker exec -it <container_id> bash
+
+# docker build without cach
+docker build --no-cache -t <name> <path_docker_file>
+
+# clean docker images
+docker system prune
+
+# remove all unused local volumes
+docker volume prune
+
+# remove all unused networks
+docker network prune
+
+# live tail a container's logs
+docker logs <container-id> -f
+
+% kuber
+
+# dev2 kuber port forvard 
+kubectl -n dev2 port-forward <service_name> <local_port>:<remote_port>
+
+# docker run redis local server with persistent storage
+docker run --rm --name some-redis -p 6379:6379 -d redis redis-server --appendonly yes
+
+# docker run rabbitmq v3 local server
+docker run --rm -d --hostname my-rabbit --name some-rabbit -p 5672:5672 -p 15672:15672 rabbitmq:3-management

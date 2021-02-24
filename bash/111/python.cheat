@@ -1,0 +1,25 @@
+% Python
+
+# upgrade all pip
+pip freeze --local | grep -v '^-e' | cut -d = -f 1  | xargs -n1 pip install -U
+
+# django make migrations files
+python manage.py makemigrations
+
+# django apply migrations to db
+python manage.py migrate
+
+# django run local web server
+python manage.py runserver 0.0.0.0:<port>
+
+# django show migrations
+python manage.py showmigrations
+
+# pip install
+pip install <package_name>
+
+# pip get version
+pip freeze | grep <package_part>
+
+# json string , python print
+echo '<string>' | python -m json.tool

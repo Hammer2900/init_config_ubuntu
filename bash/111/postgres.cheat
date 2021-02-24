@@ -1,0 +1,7 @@
+% postgres
+
+# dump db to file
+pg_dump -Fc -v --host=<host> --port=<port> --username=<user> --dbname=<db_name> -f <path_to_damp_file>
+
+# restore dum to db
+pg_restore -v --clean --no-acl --no-owner --host=<host> --port=<port> --username=<user> --dbname=<db_name> <path_to_damp_file>

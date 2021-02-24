@@ -1,0 +1,4 @@
+% mongo
+
+# mongo connect with password
+mongo --host <host>:<port> --username <username> --password <password>

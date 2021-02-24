@@ -1,0 +1,9 @@
+% Nim
+
+# compile nim
+nim c <filename>
+
+# compile nim and run
+nim c -r <filename>
+
+$ filename: ls -a | grep -e "\(.nim\)"             || ls -a
