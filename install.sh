@@ -11,8 +11,8 @@ tar -xzvf /tmp/bat-v0.12.1-x86_64-unknown-linux-gnu.tar.gz -C /tmp
 sudo cp /tmp/bat-v0.12.1-x86_64-unknown-linux-gnu/bat /usr/bin/
 
 echo "............................................... Broot ..............................................."
-wget -P /tmp/ https://github.com/Canop/broot/releases/download/v0.12.1/release.zip
-unzip /tmp/release.zip -d /tmp/
+wget -P /tmp/ https://github.com/Canop/broot/releases/download/v1.6.2/broot_1.6.2.zip
+unzip /tmp/broot_1.6.2.zip -d /tmp/
 sudo cp /tmp/build/x86_64-linux/broot /usr/bin/
 
 echo "............................................... Ctop ..............................................."
