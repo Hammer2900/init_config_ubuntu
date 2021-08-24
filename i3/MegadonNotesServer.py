@@ -1,4 +1,4 @@
-#!/usr/bin/env /home/izot/.local/share/virtualenvs/test_python3-_8u9lZwJ/bin/python
+#!/mnt/w1/jek/TEMP/all_python/.venv/bin/python
 
 import webview
 import i3ipc
