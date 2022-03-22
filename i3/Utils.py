@@ -13,6 +13,3 @@ else:
     root.command('workspace Utils')
     webview.create_window('Utils1', 'https://hammer2900.github.io/')
     webview.start()
-
-
-

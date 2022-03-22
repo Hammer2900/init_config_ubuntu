@@ -13,6 +13,3 @@ else:
     root.command('workspace Notes')
     webview.create_window('MegadonNotesServer1', 'http://91.241.167.37:99/')
     webview.start()
-
-
-

@@ -26,9 +26,9 @@ tar -xzvf /tmp/lf-linux-amd64.tar.gz -C /tmp
 sudo cp /tmp/lf /usr/bin/lf
 
 echo "............................................... Micro ..............................................."
-wget -P /tmp/ https://github.com/zyedidia/micro/releases/download/nightly/micro-2.0.0-rc3.dev.30-linux64.tar.gz
-tar -xzvf /tmp/micro-2.0.0-rc3.dev.30-linux64.tar.gz -C /tmp
-sudo cp /tmp/micro-2.0.0-rc3.dev.30/micro /usr/bin/micro
+wget -P /tmp/ https://github.com/zyedidia/micro/releases/download/v2.0.10/micro-2.0.10-linux64.tar.gz
+tar -xzvf /tmp/micro-2.0.10-linux64.tar.gz -C /tmp
+sudo cp /tmp/micro-2.0.10/micro /usr/bin/micro
 
 echo "............................................. Alacritty ............................................."
 wget -P /tmp/ https://github.com/alacritty/alacritty/releases/download/v0.4.1/Alacritty-v0.4.1-ubuntu_18_04_amd64.tar.gz

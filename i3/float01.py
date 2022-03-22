@@ -1,4 +1,4 @@
-#!/mnt/w1/jek/TEMP/all_python/.venv/bin/python
+#!/home/izot/Documents/111/init_config_ubuntu/.env38/bin/python
 import os
 
 import i3ipc
@@ -9,7 +9,6 @@ i3 = i3ipc.Connection()
 def center_window():
     """
     Float and center window, i3wm.
-    :return:
     """
     a = i3.get_tree().find_focused()
     if a.floating == 'user_on':
@@ -29,4 +28,5 @@ def center_window():
     # os.system(f'xdotool mousemove --window {a.id} 0 0')
 
 
-center_window()
+if __name__ == '__main__':
+    center_window()
