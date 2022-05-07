@@ -337,7 +337,7 @@ bar {
         font pango:DejaVu Sans Mono, FontAwesome 12
         position top
         tray_padding 4
-    	tray_output $dp0
+        tray_output $dp0
 }
 
 
