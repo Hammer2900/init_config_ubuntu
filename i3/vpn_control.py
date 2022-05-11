@@ -1,4 +1,4 @@
-#!/home/izot/Documents/111/init_config_ubuntu/.env38/bin/python
+#!/run/media/izot/652aebd5-b153-4f9e-ba3d-2fb1b4d4b246/jek/TEMP/all_python/.venv_f/bin/python
 import fire
 import os
 
