@@ -12,13 +12,18 @@ alias pipfreeze='pip freeze > requirements.txt'
 alias pi='pip install -r'
 alias pl='pip list'
 alias pes='pipenv shell'
+alias pi='pip install'
+alias pf='pip freeze'
+alias chmod='sudo chmod +x'
+alias disk='sudo duf'
 
 
 # Docker: BASIC
 alias doc='docker ps;docker images;'
 alias docp='docker ps'
 alias doci='docker images'
-alias dprune='docker system prune'
+alias dp='docker system prune'
+alias dpa="sudo docker system prune -a"
 
 # Network test
 alias ddd='dbxfs test'
@@ -33,3 +38,4 @@ alias ls='exa -al --color=always --group-directories-first'
 alias la='exa --tree --level=2'
 alias ll='exa -l --color=always --group-directories-first'
 alias lt='exa -aT --color=always --group-directories-first'
+alias ..='cd ..'
