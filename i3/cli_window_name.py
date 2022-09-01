@@ -14,21 +14,21 @@ def get_activity_name():
 
     if m is not None:
 
-        window_id = m.group(1)
+        window_id = m[1]
 
         windowname = None
         window = Popen(['xprop', '-id', window_id, 'WM_NAME'], stdout=PIPE)
         stdout, stderr = window.communicate()
         wmatch = re.match(b'WM_NAME\(\w+\) = (?P<name>.+)$', stdout)
         if wmatch is not None:
-            windowname = wmatch.group('name').decode('UTF-8').strip('"')
+            windowname = wmatch['name'].decode('UTF-8').strip('"')
 
         processname1, processname2 = None, None
         process = Popen(['xprop', '-id', window_id, 'WM_CLASS'], stdout=PIPE)
         stdout, stderr = process.communicate()
         pmatch = re.match(b'WM_CLASS\(\w+\) = (?P<name>.+)$', stdout)
         if pmatch is not None:
-            processname1, processname2 = pmatch.group('name').decode('UTF-8').split(', ')
+            processname1, processname2 = pmatch['name'].decode('UTF-8').split(', ')
             processname1 = processname1.strip('"')
             processname2 = processname2.strip('"')
 

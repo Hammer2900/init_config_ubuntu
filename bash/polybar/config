@@ -453,5 +453,5 @@ interval = 600
 
 [module/usd]
 type = custom/script
-exec = /home/izot/.config/polybar/scripts/privat_usd.sh
+exec = /run/media/izot/652aebd5-b153-4f9e-ba3d-2fb1b4d4b246/jek/TEMP/init_config_ubuntu/bash/polybar/scripts/privat_usd.sh
 interval = 600

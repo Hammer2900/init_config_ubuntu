@@ -5,10 +5,9 @@ import i3ipc
 
 i3 = i3ipc.Connection()
 root = i3.get_tree()
-finding = root.find_named('Utils1')
-if finding:
+if finding := root.find_named('Utils1'):
     root.command('workspace Utils')
-    root.command('[con_id=%s] focus' % finding[0].id)
+    root.command(f'[con_id={finding[0].id}] focus')
 else:
     root.command('workspace Utils')
     webview.create_window('Utils1', 'https://hammer2900.github.io/')

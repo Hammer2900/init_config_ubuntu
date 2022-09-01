@@ -7,9 +7,7 @@ i3 = i3ipc.Connection()
 
 
 def center_window():
-    """
-    Float and center window, i3wm.
-    """
+    """Float and center window, i3wm."""
     a = i3.get_tree().find_focused()
     if a.floating == 'user_on':
         a.command('floating disable')

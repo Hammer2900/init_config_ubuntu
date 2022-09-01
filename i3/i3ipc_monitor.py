@@ -34,7 +34,8 @@ def focus_window(i3, container_id):
 
 
 def move_container(i3, name, monitor, container_id=None):
-    """Move give window to container and if container id is set focus to this container."""
+    """Move give window to container and if container id is set focus to this
+    container."""
     i3.command(f'move container to workspace {name}')
     i3.command(f'workspace {name}, move workspace to output {monitor}')
     if container_id:

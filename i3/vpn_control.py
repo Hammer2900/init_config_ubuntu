@@ -11,7 +11,7 @@ class Vpn:
         os.system('nmcli con')
 
     def enable_aws(self, notify=True):
-        os.system('nmcli con up id somo_hammer2900_somo')
+        os.system('nmcli con up id CON_NAME')
         self.list()
         if notify:
             os.system('notify-send "VPN" "enable AWS vpn"')
@@ -26,7 +26,7 @@ class Vpn:
         if log:
             self.list()
         os.system('nmcli con down id hammer')
-        os.system('nmcli con down id somo_hammer2900_somo')
+        os.system('nmcli con down id CON_NAME')
         if log:
             self.list()
         if notify:

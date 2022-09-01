@@ -16,7 +16,10 @@ from rich.markdown import Markdown
 
 @task(default=True)
 def pwd(ctx):
-    """Test task. Echo."""
+    """Test task.
+
+    Echo.
+    """
     print('[√]: ', ctx.run('pwd'))
 
 
@@ -31,7 +34,10 @@ def docker_redis(ctx, com='start'):
 
 @task()
 def install_exa(ctx):
-    """Install exa app from github. Unpack zip archive."""
+    """Install exa app from github.
+
+    Unpack zip archive.
+    """
     ctx.run('wget -P /tmp/ https://github.com/ogham/exa/releases/download/v0.9.0/exa-linux-x86_64-0.9.0.zip')
     ctx.run('unzip /tmp/exa-linux-x86_64-0.9.0.zip -d /tmp/')
     ctx.sudo('cp /tmp/exa-linux-x86_64 /usr/bin/exa')
@@ -42,7 +48,10 @@ def install_exa(ctx):
 
 @task()
 def install_bat(ctx):
-    """Install bat app from github. Unpack gz archive."""
+    """Install bat app from github.
+
+    Unpack gz archive.
+    """
     ctx.run(
         'wget -P /tmp/ https://github.com/sharkdp/bat/releases/download/v0.12.1/bat-v0.12.1-x86_64-unknown-linux-gnu.tar.gz'
     )
@@ -55,7 +64,10 @@ def install_bat(ctx):
 
 @task()
 def install_lf(ctx):
-    """Install lf file manager app from github. Unpack gz archive."""
+    """Install lf file manager app from github.
+
+    Unpack gz archive.
+    """
     ctx.run('wget -P /tmp/ https://github.com/gokcehan/lf/releases/download/r26/lf-linux-amd64.tar.gz')
     ctx.run('tar -xzvf /tmp/lf-linux-amd64.tar.gz -C /tmp')
     ctx.sudo('cp /tmp/lf /usr/bin/lf')

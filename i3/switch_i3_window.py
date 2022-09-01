@@ -10,9 +10,10 @@ def sss(message: str):
 
 
 class WorkspaceSwitcher:
-    """
-    bindsym $mod+Control+z exec "/run/media/izot/652aebd5-b153-4f9e-ba3d-2fb1b4d4b246/jek/TEMP/all_python/i3wm/switch_i3_window.py switch Pycharm 'workspace PyCharm'"
-    """
+    """bindsym $mod+Control+z exec "/run/media/izot/652aebd5-b153-4f9e-ba3d-2fb
+    1b4d4b246/jek/TEMP/all_python/i3wm/switch_i3_window.py switch Pycharm
+    'workspace PyCharm'"."""
+
     def __init__(self):
         self.i3 = i3ipc.Connection()
         self.db = '/dev/shm/window.db'
@@ -33,8 +34,8 @@ class WorkspaceSwitcher:
                 self.i3.command(command)
 
     def center_window(self):
-        """
-        Float and center window.
+        """Float and center window.
+
         :return:
         """
         a = self.i3.get_tree().find_focused()

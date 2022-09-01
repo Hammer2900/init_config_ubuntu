@@ -1,3 +1,4 @@
+import contextlib
 import sublime
 import sublime_plugin
 from rich.console import Console
@@ -47,7 +48,5 @@ class PromCommand(sublime_plugin.WindowCommand):
         self.window.show_input_panel('Goto Line:', '-', self.on_done, None, None)
 
     def on_done(self, title):
-        try:
+        with contextlib.suppress(ValueError):
             self.window.active_view().run_command('panel', {'title': title})
-        except ValueError:
-            pass
