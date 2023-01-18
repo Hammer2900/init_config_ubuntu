@@ -40,6 +40,14 @@ def docker_redis(ctx, com='start'):
 
 
 @task()
+def set_git(ctx):
+    """Init git information"""
+    ctx.run('git config --global user.name "Tsybulskyi Evhenyi"')
+    ctx.run('git config --global user.email etsu2900@gmail.com')
+    ctx.run('git config --global core.editor nano')
+
+
+@task()
 def install_exa(ctx):
     """Install exa app from github.
 
