@@ -22,7 +22,8 @@ sudo mount -t ntfs-3g /dev/nvme0n1p2 /mnt/ntfs
 ## Settings
 
 ```
-xset q - show you the current settings for the X
-xset r rate 250 30 - key repeat rate like Windows
-xset r rate 200 30 - key repeat rate like Mac os
+xset q - show you the current settings for the x
+xset r rate 250 30 - key repeat rate like windows
+xset r rate 200 30 - key repeat rate like mac os
+xset m 6 1 - mouse pointer speed like Mac os
 ```
