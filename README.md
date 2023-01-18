@@ -12,6 +12,13 @@ lxappearance - prepare folder view
 https://github.com/greshake/i3status-rust
 ```
 
+## Mount NTFS
+
+```
+sudo fdisk -l
+sudo mount -t ntfs-3g /dev/nvme0n1p2 /mnt/ntfs
+```
+
 ## Settings
 
 ```
