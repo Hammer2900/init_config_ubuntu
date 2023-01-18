@@ -1,0 +1,109 @@
+#         _      _      _ ____                      __ _
+#        | |    | |    (_)___ \                    / _(_)
+#        | | ___| | __  _  __) |    ___ ___  _ __ | |_ _  __ _
+#    _   | |/ _ \ |/ / | ||__ <    / __/ _ \| '_ \|  _| |/ _` |
+#   | |__| |  __/   <  | |___) |  | (_| (_) | | | | | | | (_| |
+#    \____/ \___|_|\_\ |_|____/    \___\___/|_| |_|_| |_|\__, |
+#                                                         __/ |
+#                                                        |___/
+
+# ///////////////////////////////////////////// Init vars /////////////////////////////////////////////
+set $cfg ~/.config/i3/modules
+set $mod Mod4
+set $keyboardswitch_us "setxkbmap -layout us,ru, -option grp:alt_shift_toggle"
+set $keyboardswitch_ru "setxkbmap -layout ru,us, -option grp:alt_shift_toggle"
+#set $play && play /home/izot/Downloads/Bfxr/briefcase-lock-10.wav
+set $rules_app_path /run/media/izot/652aebd5-b153-4f9e-ba3d-2fb1b4d4b246/jek/TEMP/all_python/i3wm/1.py
+set $telegram_path /run/media/izot/652aebd5-b153-4f9e-ba3d-2fb1b4d4b246/jek/Documents/Telegram
+set $subl_path /mnt/w1/jek/Documents/sublime_text/sublime_text
+set $infra_path /run/media/izot/652aebd5-b153-4f9e-ba3d-2fb1b4d4b246/jek/Documents/infra.sh
+set $postman_path /run/media/izot/652aebd5-b153-4f9e-ba3d-2fb1b4d4b246/jek/Documents/Postman/Postman
+set $ws1  "1"
+set $ws2  "2"
+set $ws3  "3"
+set $ws4  "4"
+set $ws5  "5"
+set $ws6  "6"
+set $ws7  "7"
+set $ws8  "8"
+set $ws9  "9"
+set $polybar  "/home/izot/.config/polybar/launch.sh &"
+set $pycharm_bin  "/usr/bin/pycharm-community"
+#set $monitor_setup  "xrandr --output DisplayPort-1 --off --output DisplayPort-0 --primary --mode 1920x1080 --pos 0x0 --rotate normal --output DisplayPort-2 --off --output DVI-D-0 --off --output HDMI-A-0 --mode 1920x1080 --pos 1920x0 --rotate normal"
+#set $monitor_setup  "xrandr --output DisplayPort-1 --off --output DisplayPort-2 --mode 1920x1080 --pos 1928x0 --rotate normal --output DisplayPort-0 --primary --mode 1920x1080 --pos 0x0 --rotate normal --output DVI-D-0 --off --output HDMI-A-0 --off"
+set $monitor_setup  "xrandr --output DisplayPort-1 --off --output DisplayPort-0 --mode 1920x1080 --pos 0x0 --rotate normal --output DisplayPort-2 --primary --mode 1920x1080 --pos 1928x0 --rotate normal --output DVI-D-0 --off --output HDMI-A-0 --off"
+set $pycharm_ssh_manager  "/mnt/w1/jek/Documents/_VENV/_OLD/web_panel_django197-ssh-manager-Kx1vQdSE/bin/python /home/izot/Documents/_HOME/web_panel_django197-ssh-manager/manage.py runserver 127.0.0.1:8006"
+set $pycharm  "Pycharm"
+set $skype  "Skype"
+set $qownnotes  "Qownnotes"
+set $slack  "Slack"
+set $fox  "Fox"
+set $git  "Git"
+set $cmd  "Cmd"
+set $run  "RUN"
+set $debug  "DEBUG"
+set $subl  "Sublime-text"
+set $vcode  "Visual-Studio-Code"
+set $telegram  "Telegram"
+set $vga0  "VGA-0"
+set $zoom  "Zoom"
+set $hdm0  "DisplayPort-2"
+set $dp0  "DisplayPort-0"
+
+# /////////////////////////////////////////////// Main ///////////////////////////////////////////////
+
+font pango:DejaVu Sans Mono, FontAwesome 12
+floating_modifier $mod
+focus_follows_mouse no
+mouse_warping none
+gaps inner 10
+gaps outer -4
+# workspace_layout stacking
+workspace_layout tabbed
+title_align center
+
+workspace $skype gaps inner 20
+workspace $skype gaps outer 30
+
+workspace $ws2 gaps inner 20
+workspace $ws2 gaps outer 30
+
+
+
+# ///////////////////////////////////////////// Hot keys /////////////////////////////////////////////
+
+include $cfg/hot_keys.conf
+
+# //////////////////////////////////////////// Workspaces ////////////////////////////////////////////
+
+include $cfg/workspaces.conf
+
+# //////////////////////////////////////////// On startup ////////////////////////////////////////////
+
+include $cfg/startup.conf
+
+# /////////////////////////////////////////// Window rules ///////////////////////////////////////////
+
+include $cfg/windows_rules.conf
+
+# /////////////////////////////////////////////// Mods ///////////////////////////////////////////////
+
+include $cfg/mods.conf
+
+# /////////////////////////////////////////// Bar settings ///////////////////////////////////////////
+
+include $cfg/bar.conf
+
+
+client.focused #526532 #526532 #ffffff #a4cb64
+client.focused_inactive #aea79f #aea79f #3c3b37 #aea79f
+client.unfocused #3c3b37 #3c3b37 #aea79f #3c3b37
+client.urgent #FF0000 #FF0000 #ffffff #FF0000
+
+# colour of border, background, text, indicator, and child_border
+#client.focused              #bf616a #2f343f #d8dee8 #bf616a #d8dee8
+#client.focused_inactive     #2f343f #2f343f #d8dee8 #2f343f #2f343f
+#client.unfocused            #2f343f #2f343f #d8dee8 #2f343f #2f343f
+#client.urgent               #2f343f #2f343f #d8dee8 #2f343f #2f343f
+#client.placeholder          #2f343f #2f343f #d8dee8 #2f343f #2f343f
+#client.background           #2f343f
