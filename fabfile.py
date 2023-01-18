@@ -13,6 +13,13 @@ from rich.markdown import Markdown
 #     config=config,
 # )
 
+# server_dev = Connection(
+#     host='ubuntu@11.19.14.46',
+#     connect_kwargs={
+#         'key_filename': KEY_PATH,
+#     },
+# )
+
 
 @task(default=True)
 def pwd(ctx):
@@ -161,3 +168,25 @@ def fastenv2(ctx, name='.venv2', remove=False, console=False):
                 ctx.run(f'/dev/shm/{name}/bin/python setup.py install')
             ctx.run(f'sudo rm /usr/bin/pyrit')
             ctx.run(f'sudo ln -s /dev/shm/{name}/bin/pyrit /usr/bin/pyrit')
+
+
+if __name__ == '__main__':
+    print(
+        json.dumps(
+            {
+                x.name.replace('_', '-'): {
+                    'help': x.help,
+                    'arg': [
+                        {
+                            'name': y.name,
+                            'kind': str(y.kind),
+                            'default': str(y.default),
+                        }
+                        for y in x.get_arguments()
+                    ],
+                }
+                for x in locals().values()
+                if isinstance(x, Task)
+            }
+        )
+    )
