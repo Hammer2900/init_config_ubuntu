@@ -1,22 +1,42 @@
 # Variables
-export EDITOR='nano'
+export EDITOR='micro'
+export PIPENV_VENV_IN_PROJECT=1
+export PYTHONDONTWRITEBYTECODE=True
 
-# Pip: Help fast functions
-alias pipi27='pipenv --python 2.7 && pipenv shell'
-alias pipi36='pipenv --python 3.6 && pipenv shell'
-alias pipi37='pipenv --python 3.7 && pipenv shell'
-alias pips='pipenv shell'
-alias pipr='pipenv --rm'
-alias pipp='pipenv --venv'
-alias pipfreeze='pip freeze > requirements.txt'
-alias pi='pip install -r'
-alias pl='pip list'
-alias pes='pipenv shell'
+alias ll='br -sdp'
+alias la='ls -A'
+alias l='ls -CF'
+
+# Kubernetes
+alias k='kubectl'
+alias kgpo='kubectl get pods'
+alias ksys='kubectl --namespace=kube-system'
+alias kdev2='kubectl --namespace=dev2'
+alias kprod='kubectl --namespace=prod'
+alias kging='kubectl get ingress'
+alias kding='kubectl describe ingress'
+
+# DNF: Short commands
+alias sdnfi='sudo dnf install'
+alias sdnfs='sudo dnf search'
+alias sdnfii='sudo dnf info'
+
+alias hg='history | grep'
 alias pi='pip install'
 alias pf='pip freeze'
-alias chmod='sudo chmod +x'
-alias disk='sudo duf'
+alias ..='cd ..'
+alias chmod="sudo chmod +x"
+alias disk="sudo duf"
+alias htop2="zenith"
+alias i="navi --path '/home/izot/Documents/all.cheat'"
+alias dpa="sudo docker system prune -a"
+alias dprune='docker system prune'
 
+alias cp="cp -i"                          # confirm before overwriting something
+alias df='df -h'                          # human-readable sizes
+alias free='free -m'                      # show sizes in MB
+
+alias pin='ping -D -O 8.8.8.8'
 
 # Docker: BASIC
 alias doc='docker ps;docker images;'
@@ -25,17 +45,8 @@ alias doci='docker images'
 alias dp='docker system prune'
 alias dpa="sudo docker system prune -a"
 
-# Network test
-alias ddd='dbxfs test'
-alias pi='ping 8.8.8.8'
-
-# Main
-alias cp="cp -i"
-alias df='df -h'
-alias free='free -m'
-
-alias ls='exa -al --color=always --group-directories-first'
-alias la='exa --tree --level=2'
-alias ll='exa -l --color=always --group-directories-first'
-alias lt='exa -aT --color=always --group-directories-first'
-alias ..='cd ..'
+# alias ls='exa -al --color=always --group-directories-first'
+# alias la='exa --tree --level=2'
+# alias ll='exa -l --color=always --group-directories-first'
+# alias lt='exa -aT --color=always --group-directories-first'
+# alias ..='cd ..'
