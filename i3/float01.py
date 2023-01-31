@@ -7,7 +7,10 @@ i3 = i3ipc.Connection()
 
 
 def center_window():
-    """Float and center window, i3wm."""
+    """
+    Float and center window, i3wm.
+    This function centers and resizes the current focused window in the i3 window manager.
+    """
     a = i3.get_tree().find_focused()
     if a.floating == 'user_on':
         a.command('floating disable')

@@ -7,12 +7,30 @@ from rich.table import Table
 
 class BachRC:
     def __table(self, title):
+        """
+        This method creates a table with a given title.
+
+        Input:
+        title: str: The title of the table.
+        Output:
+        table: rich.table.Table: An instance of rich.table.
+        Table with the specified title and two columns 'Command' and 'Action'.
+        """
         table = Table(title=title, show_header=True)
         table.add_column('Command', justify='right', style='cyan', no_wrap=True)
         table.add_column('Action', style='magenta')
         return table
 
     def print(self, width: int = 170):
+        """
+        This method opens the user's .bashrc file,
+        reads the contents and prints a table of the alias and export commands in the file.
+
+        Input:
+        width: int: The width of the console in characters. (default = 170)
+        Output:
+        None. A table of the alias and export commands in the user's .bashrc file is printed on the console.
+        """
         alias_table = self.__table('Alias')
         export_table = self.__table('Export')
         with open(f"{os.path.expanduser('~')}/.bashrc", 'r') as f:

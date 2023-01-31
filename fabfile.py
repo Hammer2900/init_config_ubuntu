@@ -32,7 +32,14 @@ def pwd(ctx):
 
 @task(help={'com': 'Enter docker command, example: start, stop, restart'})
 def docker_redis(ctx, com='start'):
-    """Run redis container commands."""
+    """
+    This function allows to run redis container commands.
+    Args:
+    com (str): Docker command, either 'start', 'stop', or 'restart'
+
+    Returns:
+    None
+    """
     if com == 'start':
         ctx.run('sudo docker run --rm -d --name some-redis -p 6379:6379 redis redis-server --appendonly yes')
     elif com == 'stop':
@@ -41,17 +48,53 @@ def docker_redis(ctx, com='start'):
 
 @task()
 def set_git(ctx):
-    """Init git information"""
+    """
+    This function initializes the git information for the current user. It sets the following properties:
+
+    - User name: Tsybulskyi Evhenyi
+    - User email: etsu2900@gmail.com
+    - Editor: nano
+
+    Parameters:
+    - ctx (InvocationContext): The context object that is passed to the task by the task runner.
+
+    Returns:
+    None
+    """
     ctx.run('git config --global user.name "Tsybulskyi Evhenyi"')
     ctx.run('git config --global user.email etsu2900@gmail.com')
     ctx.run('git config --global core.editor nano')
 
 
 @task()
-def install_exa(ctx):
-    """Install exa app from github.
+def copy_folder(ctx):
+    """Archive folder and copy to operative memory."""
+    server = Connection(
+        host='ubuntu@ec21-54-158-192-99.compute-1.amazonaws.com',
+        connect_kwargs={
+            'key_filename': '/home/izot/Downloads/Binancekey.pem',
+        },
+    )
+    # server.sudo('apt-get update -y')
+    # server.sudo('apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y')
+    server.sudo(
+        'docker run -d --restart=always --name tor-socks-proxy -p 127.0.0.1:9150:9150/tcp peterdavehello/tor-socks-proxy:latest'
+    )
+    # server.sudo('apt install zip unzip -y')
+    # server.run('zip -r /dev/shm/data.zip /home/ubuntu/projects/fr_binance_tradebot')
+    # server.get('/dev/shm/data.zip', '/dev/shm/data.zip')
 
-    Unpack zip archive.
+
+@task()
+def install_exa(ctx):
+    """
+    The install_exa function is used to install the exa app from GitHub. It performs the following steps:
+
+    Downloads the zip archive of the app from GitHub using the wget command.
+    Unpacks the archive using the unzip command.
+    Copies the extracted app to the /usr/bin/ directory using the sudo and cp commands.
+    Verifies the installation by displaying the help information of the app using the exa --help command.
+    Deletes the downloaded zip archive and the extracted app from the /tmp/ directory using the rm command.
     """
     ctx.run('wget -P /tmp/ https://github.com/ogham/exa/releases/download/v0.9.0/exa-linux-x86_64-0.9.0.zip')
     ctx.run('unzip /tmp/exa-linux-x86_64-0.9.0.zip -d /tmp/')
@@ -96,7 +139,17 @@ def install_lf(ctx):
     }
 )
 def cap(ctx, monitor=False, ui=False, fb=False):
-    """Install or use network sniffer."""
+    """
+    Install and use network sniffer Bettercap.
+
+    Parameters:
+    monitor (bool): If True, the function will run a Bettercap command to monitor the LAN network.
+    ui (bool): If True, the function will run a Bettercap command to start the Bettercap UI.
+    fb (bool): If True, the function will run a Bettercap command to use the fb-phish caplet.
+
+    Returns:
+    None
+    """
     if monitor:
         ctx.sudo(f'docker run --rm -it --privileged --net=host bettercap/bettercap -eval "net.probe on; ticker on"')
     elif ui:
