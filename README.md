@@ -270,3 +270,26 @@ xset m 6 1 - mouse pointer speed like Mac os
 
 ---
 
+| Option                                      | Description                                      |
+| ------------------------------------------- | ------------------------------------------------ |
+| navi                                        | Default behavior                                 |
+| navi fn welcome                             | Show cheatsheets for navi itself                 |
+| navi --print                                | Doesn't execute the snippet                      |
+| navi --tldr docker                          | Search for docker cheatsheets using tldr         |
+| navi --cheatsh docker                       | Search for docker cheatsheets using cheatsh      |
+| navi --path '/some/dir:/other/dir'          | Use .cheat files from custom paths               |
+| navi --query git                            | Filter results by "git"                          |
+| navi --query 'create db' --best-match       | Autoselect the snippet that best matches a query |
+| db=my navi --query 'create db' --best-match | Same, but set the value for the \ variable |
+| navi repo add denisidoro/cheats             | Import cheats from a git repository              |
+| eval "$(navi widget zsh)"                   | Load the zsh widget                              |
+| navi --finder 'skim'                        | Set skim as finder, instead of fzf               |
+| navi --fzf-overrides '--with-nth 1,2'       | Show only the comment and tag columns            |
+| navi --fzf-overrides '--no-select-1'        | Prevent autoselection in case of single line     |
+| navi --fzf-overrides-var '--no-select-1'    | Same, but for variable selection                 |
+| navi --fzf-overrides '--nth 1,2'            | Only consider the first two columns for search   |
+| navi --fzf-overrides '--no-exact'           | Use looser search algorithm                      |
+| navi --tag-rules='git,!checkout'            | Show non-checkout git snippets only              |
+
+---
+
