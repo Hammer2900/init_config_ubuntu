@@ -57,3 +57,8 @@ tar -xzf /tmp/navi-v2.20.1-x86_64-unknown-linux-musl.tar.gz -C /tmp/
 cp /tmp/navi /usr/bin/navi
 rm /tmp/navi-v2.20.1-x86_64-unknown-linux-musl.tar.gz
 rm /tmp/navi
+
+echo "............................................... Dive ..............................................."
+wget -P /tmp/ https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_linux_amd64.deb
+dpkg -i /tmp/dive_0.10.0_linux_amd64.deb
+rm /tmp/dive_0.10.0_linux_amd64.deb
