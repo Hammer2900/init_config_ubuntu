@@ -43,3 +43,17 @@ echo ".............................................. Zenith ....................
 wget -P /tmp/ https://github.com/bvaisvil/zenith/releases/download/0.11.0/zenith.x86_64-unknown-linux-musl.tgz
 tar -xzvf /tmp/zenith.x86_64-unknown-linux-musl.tgz -C /tmp
 sudo cp /tmp/zenith /usr/bin/zenith
+
+echo "................................................ Fzf ................................................"
+wget -P /tmp/ https://github.com/junegunn/fzf/releases/download/0.38.0/fzf-0.38.0-linux_amd64.tar.gz
+tar -xzf /tmp/fzf-0.38.0-linux_amd64.tar.gz -C /tmp/
+cp /tmp/fzf /usr/bin/fzf
+rm /tmp/fzf-0.38.0-linux_amd64.tar.gz
+rm /tmp/fzf
+
+echo "............................................... Navi ................................................"
+wget -P /tmp/ https://github.com/denisidoro/navi/releases/download/v2.20.1/navi-v2.20.1-x86_64-unknown-linux-musl.tar.gz
+tar -xzf /tmp/navi-v2.20.1-x86_64-unknown-linux-musl.tar.gz -C /tmp/
+cp /tmp/navi /usr/bin/navi
+rm /tmp/navi-v2.20.1-x86_64-unknown-linux-musl.tar.gz
+rm /tmp/navi
