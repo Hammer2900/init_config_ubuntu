@@ -11,3 +11,17 @@ function find-and-activate
     end
   end
 end
+
+function create-or-remove-symlink
+  set target (readlink -f $argv[1])
+  set linkname (basename $target)
+  set linkpath /usr/local/bin/$linkname
+
+  if test -L $linkpath
+    echo Removing existing symlink: $linkpath
+    sudo rm $linkpath
+  else
+    echo Creating symlink: $linkpath -\> $target
+    sudo ln -s $target $linkpath
+  end
+end
