@@ -14,7 +14,7 @@ end
 
 function create-or-remove-symlink
   set target (readlink -f $argv[1])
-  set linkname (basename $target)
+  set linkname (basename $target | tr '[:upper:]' '[:lower:]')
   set linkpath /usr/local/bin/$linkname
 
   if test -L $linkpath
