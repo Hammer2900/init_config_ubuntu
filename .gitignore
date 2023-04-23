@@ -4,3 +4,4 @@
 .idea/modules.xml
 .idea/init_config_ubuntu.iml
 .idea/
+.venv/

@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fire = "*"
+i3ipc = "*"
+sh = "*"
+pynput = "*"
+rich = "==13.3.4"
+fabric2 = "==3.0.0"
+arrow = "==1.2.3"
+python-slugify = "==8.0.1"
+art = "==5.9"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"
