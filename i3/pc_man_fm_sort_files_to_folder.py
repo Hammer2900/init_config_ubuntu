@@ -1,3 +1,4 @@
+#!/run/media/izot/652aebd5-b153-4f9e-ba3d-2fb1b4d4b246/jek/TEMP/init_config_ubuntu/.venv/bin/python
 import fire
 import os
 import shutil
