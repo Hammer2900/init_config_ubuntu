@@ -1,0 +1,1 @@
+sudo cp /etc/keyd/default.conf /mnt/jek/jek/TEMP/init_config_ubuntu/bash/keyd
