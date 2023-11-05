@@ -18,10 +18,21 @@
   # Define on which hard drive you want to install Grub.
   boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
 
+  nix.gc.automatic = true;
+  nix.gc.options = "--delete-older-than 1d";
+
   networking.hostName = "izot-home"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  programs.nm-applet.enable = true;
+  environment.variables.EDITOR = "nano";
+  programs.nano.nanorc = ''
+    set softwrap
+    set tabsize 4
+    set tabstospaces
+    set linenumbers
+  '';
 
   # Set your time zone.
   time.timeZone = "Europe/Kyiv";
@@ -78,7 +89,7 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    pcmanfm jetbrains.pycharm-community sublime4 telegram-desktop sakura arandr keyd dmenu
+    pcmanfm jetbrains.pycharm-community sublime4 telegram-desktop sakura arandr keyd dmenu yad
     vim git firefox rofi micro broot python312 python311 neofetch flameshot xarchiver freefont_ttf ubuntu_font_family
     wget i3 i3lock i3status i3blocks
   ];
@@ -124,6 +135,18 @@
   system.stateVersion = "23.05"; # Did you read the comment?
   virtualisation.virtualbox.host.enable = true;
   zramSwap.enable = true;
-
+  services.picom = {
+    enable = true;
+    fade = true;
+    shadow = true;
+    fadeDelta = 4 ;
+    inactiveOpacity = 0.8;
+    activeOpacity = 1;
+    settings = {
+      blur = {
+	strength = 5;
+      };
+    };
+  };
 }
 

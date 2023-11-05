@@ -28,72 +28,55 @@ def pwd(ctx):
     # server.sudo('cp /dev/shm/configuration.nix /mnt/etc/nixos/configuration.nix')
     # server.sudo('cat /mnt/etc/nixos/configuration.nix')
 
-    # ====================================== MBR ====================================== #
-
-    # server.sudo('parted /dev/sda --script -- mklabel msdos')
-    # server.sudo('parted /dev/sda --script -- mkpart primary 1MB -8GB')
-    # server.sudo('parted /dev/sda --script -- mkpart primary linux-swap -8GB 100%')
-
-    # server.sudo('mkfs.ext4 -L nixos /dev/sda1')
-    # server.sudo('mkswap -L swap /dev/sda2')
-    # server.sudo('swapon /dev/sda2')
-    # server.sudo('mount /dev/disk/by-label/nixos /mnt')
-    # server.sudo('nixos-generate-config --root /mnt')
-
-    # server.put('.configuration.nix', '/dev/shm/configuration.nix')
-    # server.sudo('cp /dev/shm/configuration.nix /mnt/etc/nixos/configuration.nix')
-    # server.sudo('cat /mnt/etc/nixos/configuration.nix')
-
-    # server.sudo('rm /mnt/etc/nixos/configuration.nix')
-    # server.sudo('nixos-install')
-    # server.sudo('reboot')
-
-    # ====================================== UEFI ===================================== #
-
-    server.sudo('parted /dev/sda --script -- mklabel gpt')
-    server.sudo('parted /dev/sda --script -- mkpart primary 512MB -8GB')
-    server.sudo('parted /dev/sda --script -- mkpart primary linux-swap -8GB 100%')
-    server.sudo('parted /dev/sda --script -- mkpart ESP fat32 1MB 512MB')
-    server.sudo('parted /dev/sda --script -- set 3 esp on')
-
-    server.sudo('mkfs.ext4 -L nixos /dev/sda1')
-    server.sudo('mkswap -L swap /dev/sda2')
-    server.sudo('swapon /dev/sda2')
-    server.sudo('mkfs.fat -F 32 -n boot /dev/sda3')
-    server.sudo('mount /dev/disk/by-label/nixos /mnt')
-    server.sudo('mkdir -p /mnt/boot')
-    server.sudo('mount /dev/disk/by-label/boot /mnt/boot')
-    server.sudo('nixos-generate-config --root /mnt')
-
-    server.put('.configuration.nix', '/dev/shm/configuration.nix')
-    server.sudo('cp /dev/shm/configuration.nix /mnt/etc/nixos/configuration.nix')
-    server.sudo('cat /mnt/etc/nixos/configuration.nix')
-
-    # server.sudo('rm /mnt/etc/nixos/configuration.nix')
-    server.sudo('nixos-install')
-    # server.sudo('reboot')
-
 
 @task
 def mbr(ctx):
-    server.sudo('parted /dev/sda --script -- mklabel msdos')
-    server.sudo('parted /dev/sda --script -- mkpart primary 1MB -8GB')
-    server.sudo('parted /dev/sda --script -- mkpart primary linux-swap -8GB 100%')
+    ctx.sudo('parted /dev/sda --script -- mklabel msdos')
+    ctx.sudo('parted /dev/sda --script -- mkpart primary 1MB -8GB')
+    ctx.sudo('parted /dev/sda --script -- mkpart primary linux-swap -8GB 100%')
 
-    server.sudo('mkfs.ext4 -L nixos /dev/sda1')
-    server.sudo('mkswap -L swap /dev/sda2')
-    server.sudo('swapon /dev/sda2')
-    server.sudo('mount /dev/disk/by-label/nixos /mnt')
-    server.sudo('nixos-generate-config --root /mnt')
+    ctx.sudo('mkfs.ext4 -L nixos /dev/sda1')
+    ctx.sudo('mkswap -L swap /dev/sda2')
+    ctx.sudo('swapon /dev/sda2')
+    ctx.sudo('mount /dev/disk/by-label/nixos /mnt')
+    ctx.sudo('nixos-generate-config --root /mnt')
 
-    server.put('.configuration.nix', '/dev/shm/configuration.nix')
-    server.sudo('cp /dev/shm/configuration.nix /mnt/etc/nixos/configuration.nix')
-    server.sudo('cat /mnt/etc/nixos/configuration.nix')
+    ctx.put('.configuration.nix', '/dev/shm/configuration.nix')
+    ctx.sudo('cp /dev/shm/configuration.nix /mnt/etc/nixos/configuration.nix')
+    ctx.sudo('cat /mnt/etc/nixos/configuration.nix')
 
-    # server.sudo('rm /mnt/etc/nixos/configuration.nix')
-    server.sudo('nixos-install')
-    # server.sudo('reboot')
+    # ctx.sudo('rm /mnt/etc/nixos/configuration.nix')
+    ctx.sudo('nixos-install')
+    # ctx.sudo('reboot')
+
+
+@task
+def uefi(ctx):
+    ctx.sudo('parted /dev/sda --script -- mklabel gpt')
+    ctx.sudo('parted /dev/sda --script -- mkpart primary 512MB -8GB')
+    ctx.sudo('parted /dev/sda --script -- mkpart primary linux-swap -8GB 100%')
+    ctx.sudo('parted /dev/sda --script -- mkpart ESP fat32 1MB 512MB')
+    ctx.sudo('parted /dev/sda --script -- set 3 esp on')
+
+    ctx.sudo('mkfs.ext4 -L nixos /dev/sda1')
+    ctx.sudo('mkswap -L swap /dev/sda2')
+    ctx.sudo('swapon /dev/sda2')
+    ctx.sudo('mkfs.fat -F 32 -n boot /dev/sda3')
+    ctx.sudo('mount /dev/disk/by-label/nixos /mnt')
+    ctx.sudo('mkdir -p /mnt/boot')
+    ctx.sudo('mount /dev/disk/by-label/boot /mnt/boot')
+    ctx.sudo('nixos-generate-config --root /mnt')
+
+    ctx.put('.configuration.nix', '/dev/shm/configuration.nix')
+    ctx.sudo('cp /dev/shm/configuration.nix /mnt/etc/nixos/configuration.nix')
+    ctx.sudo('cat /mnt/etc/nixos/configuration.nix')
+
+    # ctx.sudo('rm /mnt/etc/nixos/configuration.nix')
+    ctx.sudo('nixos-install')
+    # ctx.sudo('reboot')
 
 
 if __name__ == '__main__':
-    pwd(server)
+    # pwd(server)
+    mbr(server)
+    # uefi(server)
