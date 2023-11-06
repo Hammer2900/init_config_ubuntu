@@ -80,10 +80,13 @@ def uefi(ctx):
 
 @task
 def upload_config_rebuild(ctx):
+    server.run('lscpu')
     server.run('lsblk')
     server.run('df -m /nix/store/')
+    # assert False
     server.put('.configuration.nix', '/dev/shm/configuration.nix')
     server.sudo('cp /dev/shm/configuration.nix /etc/nixos/configuration.nix')
+    # server.sudo('cat /mnt/etc/nixos/configuration.nix')
     server.sudo('nixos-rebuild switch', warn=True)
 
 
