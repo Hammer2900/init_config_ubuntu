@@ -4,7 +4,8 @@ from fabric import task, Connection, Config, Task
 from rich import print, pretty, inspect
 
 server = Connection(
-    host='nixos@192.168.28.179',
+    # host='nixos@192.168.28.179',
+    host='izot@192.168.28.179',
     connect_kwargs={
         'password': '123456',
     },
@@ -76,7 +77,16 @@ def uefi(ctx):
     # ctx.sudo('reboot')
 
 
+@task
+def upload_config_rebuild(ctx):
+    server.run('lsblk')
+    server.run('df -m /nix/store/')
+    server.put('.configuration.nix', '/dev/shm/configuration.nix')
+    server.sudo('cp /dev/shm/configuration.nix /mnt/etc/nixos/configuration.nix')
+
+
 if __name__ == '__main__':
     # pwd(server)
-    mbr(server)
+    # mbr(server)
+    upload_config_rebuild(server)
     # uefi(server)

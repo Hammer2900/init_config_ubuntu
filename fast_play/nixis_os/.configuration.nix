@@ -21,12 +21,12 @@
   nix.gc.automatic = true;
   nix.gc.options = "--delete-older-than 1d";
 
-  networking.hostName = "izot-home"; # Define your hostname.
+  networking.hostName = "inixos"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
   programs.nm-applet.enable = true;
-  environment.variables.EDITOR = "nano";
+  environment.variables.EDITOR = "micro";
   programs.nano.nanorc = ''
     set softwrap
     set tabsize 4
@@ -55,7 +55,7 @@
   services.xserver.windowManager.i3.enable = true;
 
 
-  
+
 
   # Configure keymap in X11
   services.xserver.layout = "us,ru";
@@ -105,15 +105,15 @@
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
+   programs.gnupg.agent = {
+     enable = true;
+     enableSSHSupport = true;
+   };
 
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
+   services.openssh.enable = true;
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
@@ -144,7 +144,7 @@
     activeOpacity = 1;
     settings = {
       blur = {
-	strength = 5;
+	    strength = 5;
       };
     };
   };
