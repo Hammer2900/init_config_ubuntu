@@ -9,6 +9,7 @@ server = Connection(
     connect_kwargs={
         'password': '123456',
     },
+    config=Config(overrides={'sudo': {'password': '123456'}})
 )
 
 
@@ -82,7 +83,8 @@ def upload_config_rebuild(ctx):
     server.run('lsblk')
     server.run('df -m /nix/store/')
     server.put('.configuration.nix', '/dev/shm/configuration.nix')
-    server.sudo('cp /dev/shm/configuration.nix /mnt/etc/nixos/configuration.nix')
+    server.sudo('cp /dev/shm/configuration.nix /etc/nixos/configuration.nix')
+    server.sudo('nixos-rebuild switch', warn=True)
 
 
 if __name__ == '__main__':

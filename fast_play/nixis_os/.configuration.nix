@@ -27,6 +27,9 @@
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
   programs.nm-applet.enable = true;
   environment.variables.EDITOR = "micro";
+  environment.variables.BROWSER = "firefox";
+  environment.variables.TERMINAL = "sakura";
+  environment.sessionVariables.TERMINAL = [ "sakura" ];
   programs.nano.nanorc = ''
     set softwrap
     set tabsize 4
