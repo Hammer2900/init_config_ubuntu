@@ -17,6 +17,7 @@
   # Define on which hard drive you want to install Grub.
   boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
 
+  nix.maxJobs = 4;
   nix.gc.automatic = true;
   nix.gc.options = "--delete-older-than 1d";
 
@@ -30,9 +31,18 @@
 
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
   networking.nameservers = [ "8.8.8.8" "8.8.4.4" ];
+  networking.networkmanager.connectionConfig = {
+    "ethernet.mtu" = 1462;
+    "wifi.mtu" = 1462;
+  };
   programs.nm-applet.enable = true;
   environment.variables.EDITOR = "micro";
   environment.variables.BROWSER = "firefox";
+#  environment.variables.GDK_SCALE = "2";
+#  environment.variables.GDK_DPI_SCALE = "0.5";
+  environment.variables._JAVA_OPTIONS = "-Dsun.java2d.uiScale=2";
+  environment.variables._JAVA_AWT_WM_NONREPARENTING = "1";
+  environment.variables.QT_STYLE_OVERRIDE = "kvantum";
   environment.variables.TERMINAL = "sakura";
   environment.sessionVariables.TERMINAL = [ "sakura" ];
   programs.nano.nanorc = ''
@@ -45,6 +55,7 @@
 #  programs.git.config.userName = "Hammer2900";
   programs.git.config.user.name = "Hammer2900";
   programs.git.config.user.email = "evgeny2900@gmail.com";
+  programs.git.config.github.user = "Hammer2900";
   programs.git.config.init.defaultBranch = "main";
   programs.firefox.enable = true;
   programs.firefox.languagePacks = ["uk"];
@@ -52,6 +63,7 @@
   programs.fish.vendor.completions.enable = false;
   programs.fish.shellInit = "neofetch";
   programs.fish.shellAliases = { g = "git"; };
+  programs.hyprland.enable = true;
 
   # Set your time zone.
   console.font = "Lat2-Terminus16";
@@ -62,6 +74,25 @@
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Select internationalisation properties.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   # i18n.defaultLocale = "en_US.UTF-8";
   # console = {
   #   font = "Lat2-Terminus16";
@@ -74,6 +105,10 @@
   services.xserver.windowManager.default = "i3";
   services.xserver.windowManager.i3.enable = true;
   services.xserver.windowManager.i3.extraSessionCommands = "bindsym F7 exec sakura -e mc";
+
+#  services.xserver.windowManager.awesome.enable = true;
+#  services.xserver.windowManager.awesome.luaModules = [pkgs.luaPackages.vicious];
+
 
 
 
@@ -106,15 +141,18 @@
   };
 
   hardware.opengl.driSupport32Bit = true;
+  hardware.opengl.extraPackages32 = with pkgs.pkgsi686Linux; [ libva ];
+  hardware.pulseaudio.support32Bit = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     pcmanfm jetbrains.pycharm-community sublime4 telegram-desktop sakura arandr keyd dmenu yad lxappearance feh
-    pavucontrol mpv far2l winbox doublecmd protonup-qt bottles Fabric black unify pdm hurl sniffnet navi duf ddgr ctop spaceFM linux-wifi-hotspot
+    pavucontrol winbox doublecmd protonup-qt bottles Fabric black unify pdm hurl sniffnet navi duf ddgr ctop spaceFM linux-wifi-hotspot
     wifite2 retroarchFull antimicrox moltengamepad qjoypad
     vim git google-chrome firefox rofi micro broot python312 python311 neofetch flameshot xarchiver freefont_ttf ubuntu_font_family nerdfonts terminus_font
-    wget i3 i3lock i3status i3blocks
+    wget i3 i3lock i3status i3blocks blueman
+    i3wsr i3-easyfocus i3lock-pixeled docker docker-compose cookiecutter clipit rofi-top rofi-rbw rofi-systemd rofi-bluetooth
   ];
 
   nixpkgs.config = {
@@ -122,7 +160,7 @@
   };
 
   nixpkgs.config.permittedInsecurePackages = [
-    "openssl-1.1.1w"
+    "openssl-1.1.1w" "openssl-1.1.1u" "openssl-1.1.1v" "electron-12.2.3"
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -132,6 +170,8 @@
      enable = true;
      enableSSHSupport = true;
    };
+   programs = {
+   bash = {shellAliases = {hg = "history | grep"; pin = "ping -D -O 8.8.8.8";};};};
 
   # List services that you want to enable:
 
@@ -155,25 +195,55 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
+  security.sudo.wheelNeedsPassword = false;
+  systemd.user.services."unclutter" = {
+    enable = true;
+    description = "hide cursor after X seconds idle";
+    wantedBy = [ "default.target" ];
+    serviceConfig.Restart = "always";
+    serviceConfig.RestartSec = 2;
+    serviceConfig.ExecStart = "${pkgs.unclutter}/bin/unclutter";
+  };
+  systemd.user.services."autocutsel" = {
+    enable = true;
+    description = "AutoCutSel";
+    wantedBy = [ "default.target" ];
+    serviceConfig.Type = "forking";
+    serviceConfig.Restart = "always";
+    serviceConfig.RestartSec = 2;
+    serviceConfig.ExecStartPre = "${pkgs.autocutsel}/bin/autocutsel -fork";
+    serviceConfig.ExecStart = "${pkgs.autocutsel}/bin/autocutsel -selection PRIMARY -fork";
+  };
   nix.extraOptions = ''
     binary-caches-parallel-connections = 3
     connect-timeout = 5
   '';
   system.stateVersion = "23.05"; # Did you read the comment?
+  security.allowSimultaneousMultithreading = true;
   boot.kernel.sysctl = {
+    "kernel.sysrq" = 1;
+    "net.core.rmem_default" = 262144;
+    "net.core.rmem_max" = 67108864;
+    "net.core.wmem_default" = 262144;
+    "net.core.wmem_max" = 67108864;
+    "kernel.pid_max" = 4194304;
+    "fs.aio-max-nr" = 1048576;
     "fs.inotify.max_user_watches" = 1048576;
     "fs.inotify.max_queued_events" = 524288;
     "fs.file-max" = 300000;
   };
   virtualisation.virtualbox.host.enable = true;
   zramSwap.enable = true;
+  zramSwap.algorithm = "lz4";
+  zramSwap.memoryPercent = 50;
+  services.blueman.enable = true;
   services.tumbler.enable = true;
   services.picom = {
     enable = true;
     fade = true;
     shadow = true;
     fadeDelta = 4 ;
-    inactiveOpacity = 0.8;
+    inactiveOpacity = 0.9;
     activeOpacity = 1;
     settings = {
       blur = {
