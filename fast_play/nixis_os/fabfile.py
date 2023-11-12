@@ -16,6 +16,10 @@ server = Connection(
 
 @task(default=True)
 def pwd(ctx):
+    """
+    fab --prompt-for-login-password -H izot@192.168.28.179 pwd
+    fab -i /path/to/keyfile.pem -H izot@192.168.28.179 pwd
+    """
     server.run('pwd')
     server.run('lsblk')
     server.run('df -h')
@@ -95,9 +99,22 @@ def upload_config_rebuild(ctx):
     server.sudo('nixos-rebuild switch', warn=True)
 
 
+@task
+def install_my_configs(ctx):
+    """
+    fab install-my-configs
+    fab -i /path/to/keyfile.pem -H izot@192.168.28.179 install-my-configs
+    fab --prompt-for-login-password -H izot@192.168.28.179 install-my-configs
+    :param ctx:
+    :return:
+    """
+    pass
+
+
 if __name__ == '__main__':
     # pwd(server)
     # mbr(server)
     # mbr(server, disc='/dev/nvme0n1', disk1='/dev/nvme0n1p1', disk2='/dev/nvme0n1p2')
-    upload_config_rebuild(server)
+    # upload_config_rebuild(server)
     # uefi(server)
+    install_my_configs(server)
