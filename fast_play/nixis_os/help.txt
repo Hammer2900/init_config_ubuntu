@@ -1,0 +1,7 @@
+qemu-system-x86_64 -cdrom /home/izot/Downloads/nixos-minimal-23.05.4662.34bdaaf1f0b7-x86_64-linux.iso -hda disk.img -boot d -m 8G
+
+qemu-img create -f qcow2 nixos-hdd.qcow2 20G
+
+-usbdevice keyboard::grab_break=right_alt
+qemu-system-x86_64 -smp 4 -m 4096 -ctrl-grab off -boot d -cdrom /home/izot/Downloads/nixos-minimal-23.05.4662.34bdaaf1f0b7-x86_64-linux.iso -hda /dev/shm/nixos-hdd.qcow2
+qemu-system-x86_64 -smp 4 -m 4096 -usbdevice keyboard::grab_break=right_alt -boot d -cdrom /home/izot/Downloads/nixos-minimal-23.05.4662.34bdaaf1f0b7-x86_64-linux.iso -hda /dev/shm/nixos-hdd.qcow2

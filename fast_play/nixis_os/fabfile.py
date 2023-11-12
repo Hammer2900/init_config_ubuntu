@@ -5,6 +5,7 @@ from rich import print, pretty, inspect
 
 server = Connection(
     # host='nixos@192.168.28.179',
+    # host='nixos@192.168.28.211',
     host='izot@192.168.28.179',
     connect_kwargs={
         'password': '123456',
@@ -32,14 +33,15 @@ def pwd(ctx):
 
 
 @task
-def mbr(ctx):
-    ctx.sudo('parted /dev/sda --script -- mklabel msdos')
-    ctx.sudo('parted /dev/sda --script -- mkpart primary 1MB -8GB')
-    ctx.sudo('parted /dev/sda --script -- mkpart primary linux-swap -8GB 100%')
+def mbr(ctx, disc='/dev/sda', disk1='/dev/sda1', disk2='/dev/sda2'):
+    ctx.sudo(f'parted {disc} --script -- mklabel msdos')
+    ctx.sudo(f'parted {disc} --script -- mkpart primary 1MB -8GB')
+    ctx.sudo(f'parted {disc} --script -- set 1 boot on')
+    ctx.sudo(f'parted {disc} --script -- mkpart primary linux-swap -8GB 100%')
 
-    ctx.sudo('mkfs.ext4 -L nixos /dev/sda1')
-    ctx.sudo('mkswap -L swap /dev/sda2')
-    ctx.sudo('swapon /dev/sda2')
+    ctx.sudo(f'mkfs.ext4 -L nixos {disk1}')
+    ctx.sudo(f'mkswap -L swap {disk2}')
+    ctx.sudo(f'swapon {disk2}')
     ctx.sudo('mount /dev/disk/by-label/nixos /mnt')
     ctx.sudo('nixos-generate-config --root /mnt')
 
@@ -48,7 +50,7 @@ def mbr(ctx):
     ctx.sudo('cat /mnt/etc/nixos/configuration.nix')
 
     # ctx.sudo('rm /mnt/etc/nixos/configuration.nix')
-    ctx.sudo('nixos-install')
+    # ctx.sudo('nixos-install')
     # ctx.sudo('reboot')
 
 
@@ -80,12 +82,15 @@ def uefi(ctx):
 
 @task
 def upload_config_rebuild(ctx):
+    """fab upload-config-rebuild"""
     server.run('lscpu')
     server.run('lsblk')
     server.run('df -m /nix/store/')
     # assert False
     server.put('.configuration.nix', '/dev/shm/configuration.nix')
+    server.put('copy_config.nix', '/dev/shm/copy_config.nix')
     server.sudo('cp /dev/shm/configuration.nix /etc/nixos/configuration.nix')
+    server.sudo('cp /dev/shm/copy_config.nix /etc/nixos/copy_config.nix')
     # server.sudo('cat /mnt/etc/nixos/configuration.nix')
     server.sudo('nixos-rebuild switch', warn=True)
 
@@ -93,5 +98,6 @@ def upload_config_rebuild(ctx):
 if __name__ == '__main__':
     # pwd(server)
     # mbr(server)
+    # mbr(server, disc='/dev/nvme0n1', disk1='/dev/nvme0n1p1', disk2='/dev/nvme0n1p2')
     upload_config_rebuild(server)
     # uefi(server)

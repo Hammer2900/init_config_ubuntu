@@ -8,6 +8,7 @@
   imports =
     [
       ./hardware-configuration.nix
+#      ./copy_config.nix
     ];
 
   boot.loader.grub.enable = true;
@@ -75,24 +76,6 @@
 
   # Select internationalisation properties.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   # i18n.defaultLocale = "en_US.UTF-8";
   # console = {
   #   font = "Lat2-Terminus16";
@@ -151,7 +134,7 @@
     pavucontrol winbox doublecmd protonup-qt bottles Fabric black unify pdm hurl sniffnet navi duf ddgr ctop spaceFM linux-wifi-hotspot
     wifite2 retroarchFull antimicrox moltengamepad qjoypad
     vim git google-chrome firefox rofi micro broot python312 python311 neofetch flameshot xarchiver freefont_ttf ubuntu_font_family nerdfonts terminus_font
-    wget i3 i3lock i3status i3blocks blueman
+    wget i3 i3lock i3status i3blocks blueman cht-sh sshfs
     i3wsr i3-easyfocus i3lock-pixeled docker docker-compose cookiecutter clipit rofi-top rofi-rbw rofi-systemd rofi-bluetooth
   ];
 
