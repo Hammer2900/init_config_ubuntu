@@ -1,7 +1,11 @@
 from pathlib import Path
 import itertools as it, glob
+from typing import Optional
+
 from fabric import task, Connection, Config, Task
 from rich import print, pretty, inspect
+from dataclasses import dataclass, field
+from pathlib import Path
 
 server = Connection(
     # host='nixos@192.168.28.179',
@@ -10,8 +14,37 @@ server = Connection(
     connect_kwargs={
         'password': '123456',
     },
-    config=Config(overrides={'sudo': {'password': '123456'}})
+    config=Config(overrides={'sudo': {'password': '123456'}}),
 )
+
+
+@dataclass
+class ConfigPlanOptions:
+    local_path: Path = field(default_factory=Path)
+    remote_path: Path = field(default_factory=Path)
+    single: bool = True
+    replace: bool = False
+    sudo: bool = False
+
+    def __post_init__(self):
+        self.local_path = Path(self.local_path)
+        self.remote_path = Path(self.remote_path)
+
+    def add_config(self, ctx):
+        # проверить есть ли файл в удаленной директории
+        #
+        ctx.run('pwd')
+        b = ctx.run(f'cat {self.remote_path}', warn=True)
+        print('[✖]', b.failed)
+        # if b.failed:
+        #     ctx.run(f'mkdir -p {self.remote_path.parent}', warn=True)
+        return 1
+
+    def get_config(self, ctx):
+        return 1
+
+    def diff_config(self, ctx):
+        return 1
 
 
 @task(default=True)
@@ -20,20 +53,21 @@ def pwd(ctx):
     fab --prompt-for-login-password -H izot@192.168.28.179 pwd
     fab -i /path/to/keyfile.pem -H izot@192.168.28.179 pwd
     """
-    server.run('pwd')
-    server.run('lsblk')
-    server.run('df -h')
-    # server.sudo('lsof /dev/sda')
+    print(ctx)
+    ctx.run('pwd')
+    # ctx.run('lsblk')
+    # ctx.run('df -h')
+    # ctx.sudo('lsof /dev/sda')
 
     # ====================================== COPY ===================================== #
 
     # get default config
-    # server.get('/mnt/etc/nixos/configuration.nix', '.configuration.nix')
+    # ctx.get('/mnt/etc/nixos/configuration.nix', '.configuration.nix')
 
     # put local config to server
-    # server.put('.configuration.nix', '/dev/shm/configuration.nix')
-    # server.sudo('cp /dev/shm/configuration.nix /mnt/etc/nixos/configuration.nix')
-    # server.sudo('cat /mnt/etc/nixos/configuration.nix')
+    # ctx.put('.configuration.nix', '/dev/shm/configuration.nix')
+    # ctx.sudo('cp /dev/shm/configuration.nix /mnt/etc/nixos/configuration.nix')
+    # ctx.sudo('cat /mnt/etc/nixos/configuration.nix')
 
 
 @task
@@ -87,16 +121,16 @@ def uefi(ctx):
 @task
 def upload_config_rebuild(ctx):
     """fab upload-config-rebuild"""
-    server.run('lscpu')
-    server.run('lsblk')
-    server.run('df -m /nix/store/')
+    ctx.run('lscpu')
+    ctx.run('lsblk')
+    ctx.run('df -m /nix/store/')
     # assert False
-    server.put('.configuration.nix', '/dev/shm/configuration.nix')
-    server.put('copy_config.nix', '/dev/shm/copy_config.nix')
-    server.sudo('cp /dev/shm/configuration.nix /etc/nixos/configuration.nix')
-    server.sudo('cp /dev/shm/copy_config.nix /etc/nixos/copy_config.nix')
-    # server.sudo('cat /mnt/etc/nixos/configuration.nix')
-    server.sudo('nixos-rebuild switch', warn=True)
+    ctx.put('.configuration.nix', '/dev/shm/configuration.nix')
+    ctx.put('copy_config.nix', '/dev/shm/copy_config.nix')
+    ctx.sudo('cp /dev/shm/configuration.nix /etc/nixos/configuration.nix')
+    ctx.sudo('cp /dev/shm/copy_config.nix /etc/nixos/copy_config.nix')
+    # ctx.sudo('cat /mnt/etc/nixos/configuration.nix')
+    ctx.sudo('nixos-rebuild switch', warn=True)
 
 
 @task
@@ -108,13 +142,30 @@ def install_my_configs(ctx):
     :param ctx:
     :return:
     """
-    pass
+    p2 = [
+        ConfigPlanOptions(
+            **{
+                'local_path': '../../bash/fish/config.fish',
+                'remote_path': '/home/izot/.config/fish/config.fish',
+                'single': True,
+                'replace': False,
+                'sudo': False,
+            }
+        ),
+        # ConfigPlanOptions(**{'local_path': '/', 'remote_path': '/', 'single': True, 'replace': False, 'sudo': False}),
+    ]
+    print('[✖]', p2)
+    for lines in p2:
+        print('[✖]', lines.add_config(ctx))
+    # add_config(ctx, 'path', single=True, replace=True)
+    # get_config(ctx, 'path', single=True, replace=True)
+    # dif_config(ctx, 'path', single=True, replace=True)
 
 
 if __name__ == '__main__':
     # pwd(server)
     # mbr(server)
     # mbr(server, disc='/dev/nvme0n1', disk1='/dev/nvme0n1p1', disk2='/dev/nvme0n1p2')
-    # upload_config_rebuild(server)
+    upload_config_rebuild(server)
     # uefi(server)
-    install_my_configs(server)
+    # install_my_configs(server)
