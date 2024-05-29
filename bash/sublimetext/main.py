@@ -81,6 +81,21 @@ class TextAlignLikeTableCommand(sublime_plugin.TextCommand):
                 self.view.replace(edit, selection, self.create_table(text))
 
 
+class TextAlignLikeTable2Command(sublime_plugin.TextCommand):
+    def create_table(self, text):
+        split_sentences = [x.split(':') for x in text.split('\n')]
+        max_head = max([len(x[0]) for x in split_sentences])
+        max_tail = max([len(x[1]) for x in split_sentences])
+        return '\n'.join([f'{x[0].ljust(max_head)} : {x[1].ljust(max_tail)}' for x in split_sentences])
+
+    def run(self, edit):
+        for selection in self.view.sel():
+            if not selection.empty():
+                text = self.view.substr(selection)
+                print(text.split('\n'))
+                self.view.replace(edit, selection, self.create_table(text))
+
+
 class TextAlignTableCommand(sublime_plugin.TextCommand):
     def create_table(self, lines, delimeter='-', border_h='─', border_v=''):
         rows = [line.split(f' {delimeter} ') for line in lines if line != '']
