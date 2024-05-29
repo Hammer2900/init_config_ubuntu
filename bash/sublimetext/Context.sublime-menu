@@ -1,0 +1,88 @@
+[
+    {
+        "caption": "-",
+        "id": "separator"
+    },
+    {
+        "caption": "Utils",
+        "class": "my-custom-class",
+        "id": "editor",
+        "before": "default",
+        "children":
+        [
+            {
+                "command": "open_terminal",
+                "caption": "Open Terminal",
+                "class": "my-custom-class",
+            },
+            {
+                "command": "wrap_ramka",
+                "caption": "Wrap text",
+            },
+            {
+                "command": "insert_directory_structure",
+                "caption": "Insert Directory Structure",
+            },
+            {
+                "command": "get_public_ip",
+                "caption": "Get Public IP",
+            },
+            {
+                "command": "words",
+                "caption": "Generate word list for voice training",
+            },
+            {
+                "command": "prom",
+                "caption": "Generate border for text",
+            },
+            {
+                "command": "slugify_text",
+                "caption": "Slugify Text",
+            },
+            {
+                "command": "make_header",
+                "caption": "Make Header",
+            },
+            {
+                "command": "make_art_header",
+                "caption": "Make Art Header",
+            },
+            {
+                "command": "make_compact_text",
+                "caption": "Make Compact Text",
+            }
+        ]
+    },
+    {
+        "command": "slugify_text",
+        "caption": "Slugify Text",
+    },
+    {
+        "command": "make_header",
+        "caption": "Make Header",
+    },
+    {
+        "command": "json_prety",
+        "caption": "Json Prety",
+    },
+    {
+        "command": "make_compact_text",
+        "caption": "Make Compact Text",
+    },
+    {
+        "command": "text_align_list",
+        "caption": "Align text by numbers",
+    },
+    {
+        "command": "text_align_table",
+        "caption": "Align text like a table",
+    },
+    {
+        "command": "text_rich_table",
+        "caption": "Text to rich table",
+    },
+    {
+        "command": "text_align_like_table",
+        "caption": "Text to rich table 2",
+    }
+]
