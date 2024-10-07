@@ -39,7 +39,8 @@ class AsyncRunOllamaRequestCommand(sublime_plugin.TextCommand):
                 {
                     # "model": "llama3.1:8b",
                     # "model": "mistral:latest",
-                    'model': 'codeqwen:latest',
+                    # "model": "codeqwen:latest",
+                    'model': 'qwen2.5:14b',
                     # "prompt": f"[INST]{code}[/INST] you will respond with markdown only !",
                     # "prompt": f"[INST]{code}[/INST] you will respond with json only !",
                     # "prompt": f"[INST]{code}[/INST] you will respond with 100 chars in response only !",

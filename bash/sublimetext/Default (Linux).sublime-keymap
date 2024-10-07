@@ -1,4 +1,31 @@
 [
-	{ "keys": ["ctrl+shift+w"], "command": "words" },
-	{ "keys": ["ctrl+shift+q"], "command": "prom" },
+	{
+    "keys": ["ctrl+shift+t"],
+    "command": "open_terminal"
+	},
+    {
+    "keys": ["ctrl+alt+a"],
+    "command": "move_to",
+    "args": {"to": "bol", "extend": true}
+    },
+	{
+    "keys": ["alt+a"],
+    "command": "toggle_checkbox"
+	},
+	{
+    "keys": ["alt+z"],
+    "command": "make_header"
+	},
+    { "keys": ["alt+tab"], "command": "toggle_comment", "args": { "block": false } },
+    { "keys": ["alt+shift+tab"], "command": "toggle_comment", "args": { "block": true } },
+    { "keys": ["shift+escape"], "command": "single_column" },
+    { "keys": ["ctrl+alt+o"], "command": "open_scratch_in_new_layout" },
+    { "keys": ["ctrl+alt+e"], "command": "execute_selected_text" },
+    { "keys": ["ctrl+alt+l"], "command": "execute_to_end_of_line2" },
+    { "keys": ["ctrl+alt+y"], "command": "stop_async_run2" },
+    { "keys": ["ctrl+alt+t"], "command": "async_run" },
+    { "keys": ["ctrl+alt+u"], "command": "change_dir" },
+    { "keys": ["ctrl+alt+i"], "command": "async_run_ollama_request" },
+    { "keys": ["ctrl+alt+left"], "command": "select_to_left_quote" },
+    { "keys": ["ctrl+alt+right"], "command": "select_to_right_quote" }
 ]
