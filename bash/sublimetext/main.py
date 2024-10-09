@@ -24,6 +24,117 @@ import queue
 import http.client
 
 
+class ConsoleAutocompleteCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        # Получаем текущую строку
+        # { "keys": ["ctrl+space"], "command": "console_autocomplete", "context": [{"key": "console_autocomplete"}] },
+        region = self.view.line(self.view.sel()[0])
+        line = self.view.substr(region)
+
+        # Получаем позицию курсора в строке
+        cursor_position = self.view.sel()[0].b - region.begin()
+
+        # Получаем предложения автодополнения
+        suggestions = self.get_autocomplete_suggestions(line, cursor_position)
+
+        # Отображаем меню с предложениями
+        if suggestions:
+            self.view.show_popup_menu(suggestions, lambda idx: self.on_done(idx, line, cursor_position))
+
+    def get_autocomplete_suggestions(self, line, cursor_position):
+        # Разбиваем строку на токены
+        tokens = shlex.split(line[:cursor_position])
+
+        if len(tokens) == 0 or (len(tokens) == 1 and not line.endswith(' ')):
+            # Автодополнение команд
+            return self.get_command_suggestions(tokens[-1] if tokens else '')
+        else:
+            # Автодополнение параметров и флагов
+            return self.get_parameter_suggestions(tokens)
+
+    def get_command_suggestions(self, prefix):
+        try:
+            output = subprocess.check_output(f'compgen -c {prefix}', shell=True, text=True)
+            return output.strip().split('\n')
+        except subprocess.CalledProcessError:
+            return []
+
+    def get_parameter_suggestions(self, tokens):
+        command = tokens[0]
+        try:
+            # Получаем помощь по команде
+            help_output = subprocess.check_output(f'{command} --help', shell=True, text=True, stderr=subprocess.STDOUT)
+
+            # Извлекаем возможные параметры и флаги
+            suggestions = []
+            for line in help_output.split('\n'):
+                if line.strip().startswith('-'):
+                    suggestions.append(line.strip().split()[0])
+
+            return suggestions
+        except subprocess.CalledProcessError:
+            return []
+
+    def on_done(self, index, line, cursor_position):
+        if index == -1:
+            return
+        selected = self.get_autocomplete_suggestions(line, cursor_position)[index]
+
+        # Вычисляем, какую часть строки нужно заменить
+        tokens = shlex.split(line[:cursor_position])
+        if len(tokens) == 0 or (len(tokens) == 1 and not line.endswith(' ')):
+            # Заменяем последнее слово или вставляем новую команду
+            replace_region = sublime.Region(
+                self.view.line(self.view.sel()[0]).begin() + line[:cursor_position].rfind(tokens[-1] if tokens else ''),
+                self.view.sel()[0].b,
+            )
+        else:
+            # Вставляем новый параметр или флаг
+            replace_region = sublime.Region(self.view.sel()[0].b, self.view.sel()[0].b)
+
+        # Используем новую команду для вставки текста
+        self.view.run_command(
+            'console_autocomplete_insert',
+            {'text': selected, 'region': (replace_region.a, replace_region.b)},
+        )
+
+
+class ConsoleAutocompleteInsertCommand(sublime_plugin.TextCommand):
+    def run(self, edit, text, region):
+        # Заменяем выбранный регион на автодополненную версию
+        self.view.replace(edit, sublime.Region(*region), text + ' ')
+
+        # Перемещаем курсор в конец вставленного текста
+        self.view.sel().clear()
+        self.view.sel().add(sublime.Region(region[0] + len(text) + 1))
+
+
+class ConsoleAutocompleteListener(sublime_plugin.EventListener):
+    def on_query_context(self, view, key, operator, operand, match_all):
+        if key == 'console_autocomplete':
+            return True
+        return None
+
+
+class HighlightToEmptyLineCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        view = self.view
+        current_position = view.sel()[0].begin()
+        start_position = current_position
+
+        while True:
+            line_region = view.line(current_position)
+            if view.substr(line_region).strip() == '':
+                break
+            current_position = line_region.begin() - 1
+            if current_position < 0:
+                break
+
+        end_position = view.line(current_position).end()
+        view.sel().clear()
+        view.sel().add(sublime.Region(start_position, end_position + 1))
+
+
 class AsyncRunOllamaRequestCommand(sublime_plugin.TextCommand):
     running = False
     process = None
