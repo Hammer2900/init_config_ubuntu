@@ -37,7 +37,7 @@ class ConsoleAutocompleteCommand(sublime_plugin.TextCommand):
         # Получаем предложения автодополнения
         suggestions = self.get_autocomplete_suggestions(line, cursor_position)
 
-        # Отображаем меню с предложениями
+        # Отображаем меню с предложениямиpwm
         if suggestions:
             self.view.show_popup_menu(suggestions, lambda idx: self.on_done(idx, line, cursor_position))
 
