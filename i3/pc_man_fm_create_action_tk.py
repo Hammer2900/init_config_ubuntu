@@ -6,6 +6,11 @@ import fire
 
 
 class TkFormAction:
+    """
+    A class to create a Tkinter form for collecting a script name and path,
+    and then generating a desktop file for that script in the user's
+    file manager actions directory.
+    """
     def __init__(self):
         self._root = tk.Tk()
         self._root.title('Name and Path Form')
@@ -46,6 +51,13 @@ class TkFormAction:
         self._root.destroy()
 
     def create_desktop_file(self, script_name, script_path):
+        """
+        Creates a desktop file for the given script.
+
+        Args:
+            script_name: The name of the script.
+            script_path: The full path to the script.
+        """
         desktop_file_content = f"""[Desktop Entry]
 Type=Action
 Name={script_name}

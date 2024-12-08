@@ -45,6 +45,9 @@ class LeftAltTimeAction:
 
 
 class RemapKeyBindingsToFastUse:
+    """
+    Remaps key bindings for faster use by defining double press actions.
+    """
     __keys_list = {keyboard.Key.ctrl: LeftCtrlTimeAction(), keyboard.Key.alt_l: LeftAltTimeAction()}
 
     def __on_press(self, key):
@@ -53,6 +56,9 @@ class RemapKeyBindingsToFastUse:
                 k.check()
 
     def run(self):
+        """
+        Starts the keyboard listener and keeps it running.
+        """
         with keyboard.Listener(on_press=self.__on_press) as listener:
             listener.join()
 

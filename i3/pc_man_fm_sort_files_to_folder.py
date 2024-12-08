@@ -7,6 +7,25 @@ from datetime import datetime
 
 
 def main(*paths):
+    """
+    Organizes and copies files and directories to a dated and sized folder in the user's Downloads directory.
+
+    This function takes multiple file and directory paths as input, calculates the total size and
+    file types, and then copies them to a new folder in the user's Downloads directory. The new
+    folder's name is based on the current date, the total size of the copied files (in MB), the
+    total number of files, and the unique file extensions.
+
+    Args:
+        *paths: A variable number of arguments representing file or directory paths to be processed.
+               Each argument should be a string representing a valid path.
+
+    Example Usage:
+      python your_script.py /path/to/file1.txt /path/to/directory1 /path/to/file2.pdf
+
+    Raises:
+        This function itself does not explicitly raise exceptions. The shutil.copy2 and shutil.copytree functions that it calls may raise exceptions (OSError, IOError).
+
+    """
     today = datetime.today().strftime('%Y-%m-%d')
     home_dir = Path.home() / 'Downloads'
 

@@ -10,7 +10,6 @@ def get_activityname():
     m = re.search(b'^_NET_ACTIVE_WINDOW.* ([\w]+)$', stdout)
 
     if m is not None:
-
         window_id = m[1]
 
         windowname = None
