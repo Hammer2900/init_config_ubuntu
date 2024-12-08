@@ -63,6 +63,19 @@ class WorkspaceSwitcher:
         self.db = '/dev/shm/window.db'
 
     def window_name(self):
+        """
+        Displays window information in a new Tkinter window.
+
+        Retrieves active window information using `get_activityname()` and displays
+        it in a formatted text box within a new window.  The information includes:
+
+        - Window Title
+        - Process Name (two variations)
+        - Suggested Sway configuration snippets for:
+            - Assigning tags based on class and title.
+            - Applying floating mode, border, and title format.
+            - Moving the window to a specific workspace and output.
+       """
         root = tk.Tk()
 
         label = tk.Label(root, text='Window information.')
@@ -124,31 +137,31 @@ class WorkspaceSwitcher:
                 f['previous_workspace'] = current_workspace
                 self.i3.command(command)
 
-    def center_window(self):
+    def center_window(self, width=800, height=1000):  # added width and height parameters
         """
-        Floats and centers the currently focused window within its workspace.
-
-        If the window is already floating, it disables floating mode. Otherwise,
-        it enables floating mode, calculates the center position of the
-        workspace, moves and resizes the window to be centered, and then
-        refocuses the window.  It assumes the workspace is wider than it is tall.
+        Floats and centers the window to the specified width and height. Default is 800x1000.
         """
         a = self.i3.get_tree().find_focused()
         if a.floating == 'user_on':
             a.command('floating disable')
             return
+
         workspace_name = a.workspace().name
         rect = a.workspace().rect
+
         a.command('floating enable')
-        new_window_width = rect.width / 2
-        window_position = new_window_width / 2
-        a.command(f'move position {window_position:.0f} {rect.y + 25}')
-        a.command(f'resize set {new_window_width:.0f} {rect.height - 70}')
+
+        # Use provided width and height
+        a.command(f'resize set {width} {height}')
+
+        # Center the window based on provided dimensions
+        window_position_x = (rect.width - width) / 2
+        window_position_y = (rect.height - height) / 2
+        a.command(f'move position {window_position_x:.0f} {window_position_y:.0f}')
+
         a.command(f'move container to workspace {workspace_name}')
-        # a.command(f'[con_id="{a.id}"] resize set 50 ppt 50 ppt')
         a.command(f'[con_id="{a.id}"] focus')
         a.command(f'workspace {workspace_name}')
-        # os.system(f'xdotool mousemove --window {a.id} 0 0')
 
 
 if __name__ == '__main__':
