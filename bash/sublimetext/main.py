@@ -23,6 +23,7 @@ import pretty_errors
 import queue
 import http.client
 from datetime import datetime, timezone, timedelta
+import ast
 
 
 class KyivDateTimeCommand(sublime_plugin.TextCommand):
@@ -1171,24 +1172,37 @@ class TextAlignListCommand(sublime_plugin.TextCommand):
                 self.view.replace(edit, selection, self.align_text_with_numbering2(text))
 
 
+class InsertFormattedJsonCommand(sublime_plugin.TextCommand):
+    def run(self, edit, text):
+        self.view.insert(edit, 0, text)
+
+
 class JsonPretyCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         for selection in self.view.sel():
             if not selection.empty():
                 new = sublime.active_window().new_file()
                 new.set_scratch(True)
+                new.set_name('Formatted Data')
 
                 text = self.view.substr(selection)
 
                 try:
+                    # Попытка декодировать как JSON
                     res = json.loads(text)
+                    format_text = json.dumps(res, indent=4, ensure_ascii=False)
+                    new.run_command('insert_formatted_json', {'text': format_text})
                 except json.decoder.JSONDecodeError:
-                    res = eval(text)
-
-                # format_text = pprint.pformat(res)
-                format_text = json.dumps(res, indent=4)
-
-                new.insert(edit, 0, format_text)
+                    try:
+                        # Попытка интерпретировать как словарь Python
+                        res = ast.literal_eval(text)
+                        if isinstance(res, dict):
+                            format_text = json.dumps(res, indent=4, ensure_ascii=False)
+                            new.run_command('insert_formatted_json', {'text': format_text})
+                        else:
+                            sublime.error_message('Selected text is not a valid JSON or Python dict')
+                    except (ValueError, SyntaxError):
+                        sublime.error_message('Selected text is not a valid JSON or Python dict')
 
 
 class ToggleCheckboxCommand(sublime_plugin.TextCommand):
