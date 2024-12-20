@@ -1,0 +1,30 @@
+[
+  {
+    "caption": "AsyncRun",
+    "children": [
+      {
+        "caption": "Run",
+        "command": "async_run",
+        "args": {
+          "action": "run"
+        }
+      },
+      {
+        "caption": "Stop",
+        "command": "async_run",
+        "args": {
+          "action": "stop"
+        },
+        "context": [
+          {
+            "key": "async_run_enabled"
+          }
+        ]
+      },
+      {
+        "caption": "Change Directory",
+        "command": "change_dir"
+      }
+    ]
+  }
+]

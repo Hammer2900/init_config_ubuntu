@@ -1,0 +1,25 @@
+[
+  {
+    "keys": ["ctrl+shift+r"],
+    "command": "async_run",
+    "args": {
+      "action": "run"
+    },
+  },
+  {
+    "keys": ["ctrl+shift+c"],
+    "command": "async_run",
+    "args": {
+      "action": "stop"
+    },
+    "context": [
+      {
+        "key": "async_run_enabled"
+      }
+    ]
+  },
+  {
+    "keys": ["ctrl+shift+d"],
+    "command": "change_dir",
+  }
+]

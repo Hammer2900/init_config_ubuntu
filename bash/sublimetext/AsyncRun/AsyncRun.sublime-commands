@@ -1,0 +1,20 @@
+[
+  {
+    "caption": "AsyncRun: Run",
+    "command": "async_run",
+    "args": {
+      "action": "run"
+    }
+  },
+  {
+    "caption": "AsyncRun: Stop",
+    "command": "async_run",
+    "args": {
+      "action": "stop"
+    }
+  },
+  {
+    "caption": "AsyncRun: Change Directory",
+    "command": "change_dir"
+  }
+]

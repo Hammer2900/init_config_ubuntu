@@ -22,12 +22,203 @@ from art import text2art
 import pretty_errors
 import queue
 import http.client
+from datetime import datetime, timezone, timedelta
+
+
+class KyivDateTimeCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        # Create Kyiv timezone
+        kiev_timezone = timezone(timedelta(hours=3))
+        current_time_kiev = datetime.now(kiev_timezone)
+
+        # Prepare different date formats
+        date_formats = [
+            current_time_kiev.strftime('%Y-%m-%d %H:%M:%S'),  # Full datetime
+            current_time_kiev.strftime('%Y-%m-%d'),  # Date
+            current_time_kiev.strftime('%d %b %Y'),  # Day Month Year
+            current_time_kiev.strftime('%A, %B %d, %Y'),  # Weekday, Month Day, Year
+            current_time_kiev.strftime('%x'),  # Locale's date representation
+        ]
+
+        # Join formats with newlines
+        formatted_dates = '\n'.join(date_formats)
+
+        # Insert at each cursor position
+        for region in self.view.sel():
+            self.view.replace(edit, region, formatted_dates)
+
+
+# class OpenSakuraTerminalCommand(sublime_plugin.TextCommand):
+#     def run(self, edit):
+#         window = self.view.window()
+#         folders = window.folders()
+
+#         if not folders:
+#             sublime.status_message("Ошибка: Открытые папки не найдены.")
+#             return
+
+#         # Показываем пользователю список папок
+#         if len(folders) > 1:
+#             window.show_quick_panel(
+#                 folders,
+#                 lambda index: self.open_terminal(index, folders),
+#                 sublime.KEEP_OPEN_ON_FOCUS_LOST,
+#                 0,
+#                 lambda _: None,
+#             )
+#         else:
+#             # Если только одна папка, открываем её сразу
+#             self.open_terminal(0, folders)
+
+#     def open_terminal(self, index, folders):
+#         if index == -1:  # Пользователь отменил выбор
+#             sublime.status_message("Операция отменена.")
+#             return
+
+#         selected_folder = folders[index]
+#         sublime.status_message(f"Открываем терминал в папке: {selected_folder}")
+
+#         command = ["sakura", "-e", "lazygit"]
+
+#         try:
+#             subprocess.Popen(
+#                 command,
+#                 cwd=selected_folder,
+#                 stdout=subprocess.DEVNULL,
+#                 stderr=subprocess.DEVNULL,
+#             )
+#         except Exception as e:
+#             sublime.error_message(f"Ошибка запуска приложения: {e}")
+
+
+class OpenSakuraTerminalCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        window = self.view.window()
+
+        folders = window.folders()
+        if not folders:
+            sublime.status_message('Ошибка: Открытая папка не найдена.')
+            return
+
+        current_folder = folders[0]
+        sublime.status_message(f'Открываем терминал в папке: {current_folder}')
+
+        command = ['sakura', '-e', 'lazygit']
+
+        try:
+            subprocess.Popen(
+                command,
+                cwd=current_folder,
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+            )
+        except Exception as e:
+            sublime.error_message(f'Ошибка запуска приложения: {e}')
+
+
+class TextBoxSharpCommand(sublime_plugin.TextCommand):
+    def format_text_box(self, text, width=60, wall_size=4):
+        """
+        Форматирует текст в блок с рамкой и автоматическим переносом строк.
+
+        Args:
+            text (str): Текст для форматирования (может быть многострочным)
+            width (int): Общая ширина блока
+            wall_size (int): Размер боковых стенок (количество #)
+
+        Returns:
+            str: Отформатированный текст в рамке
+        """
+        try:
+            # Убеждаемся, что параметры являются числами
+            width = 60 if not isinstance(width, (int, str)) else int(width)
+            wall_size = 4 if not isinstance(wall_size, (int, str)) else int(wall_size)
+
+            # Проверяем минимальные значения
+            width = max(20, width)  # Минимальная ширина 20
+            wall_size = max(1, min(10, wall_size))  # Размер стенки от 1 до 10
+
+            # Создаем верхнюю и нижнюю границы
+            border = '#' * width
+
+            # Вычисляем доступную ширину для текста
+            content_width = width - (wall_size * 2 + 2)  # 2 для пробелов вокруг текста
+
+            # Разбиваем входной текст на строки
+            input_lines = text.strip().split('\n')
+
+            # Функция для разбиения строки на части подходящей длины
+            def wrap_line(line):
+                words = line.split()
+                wrapped_lines = []
+                current_line = []
+                current_length = 0
+
+                for word in words:
+                    # Проверяем, поместится ли слово в текущую строку
+                    if current_length + len(word) + (1 if current_line else 0) <= content_width:
+                        current_line.append(word)
+                        current_length += len(word) + (1 if current_line else 0)
+                    else:
+                        # Если строка не пустая, добавляем её в результат
+                        if current_line:
+                            wrapped_lines.append(' '.join(current_line))
+                        # Начинаем новую строку с текущим словом
+                        current_line = [word]
+                        current_length = len(word)
+
+                # Добавляем последнюю строку, если она есть
+                if current_line:
+                    wrapped_lines.append(' '.join(current_line))
+
+                return wrapped_lines
+
+            # Форматируем все строки с учетом переноса
+            formatted_lines = []
+            wall = '#' * wall_size
+
+            for line in input_lines:
+                wrapped = wrap_line(line)
+                for wrapped_line in wrapped:
+                    # Центрируем текст в доступном пространстве
+                    padded_line = wrapped_line.center(content_width)
+                    formatted_line = f'{wall} {padded_line} {wall}'
+                    formatted_lines.append(formatted_line)
+
+            # Собираем все части вместе
+            result = [border]
+            result.extend(formatted_lines)
+            result.append(border)
+
+            return '\n'.join(result)
+
+        except (ValueError, TypeError) as e:
+            # В случае ошибки возвращаем оригинальный текст
+            sublime.error_message(f'Error formatting text box: {str(e)}')
+            return text
+
+    def run(self, edit):
+        # Получаем настройки из конфигурации (если нужно)
+        settings = sublime.load_settings('TextBoxSharp.sublime-settings')
+        default_width = settings.get('default_width', 60)
+        default_wall_size = settings.get('default_wall_size', 4)
+
+        for selection in self.view.sel():
+            if not selection.empty():
+                # Получаем выделенный текст
+                text = self.view.substr(selection)
+                try:
+                    # Форматируем текст с значениями по умолчанию
+                    formatted_text = self.format_text_box(text, width=default_width, wall_size=default_wall_size)
+                    # Заменяем выделенный текст отформатированным
+                    self.view.replace(edit, selection, formatted_text)
+                except Exception as e:
+                    sublime.error_message(f'Error: {str(e)}')
 
 
 class ConsoleAutocompleteCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         # Получаем текущую строку
-        # { "keys": ["ctrl+space"], "command": "console_autocomplete", "context": [{"key": "console_autocomplete"}] },
         region = self.view.line(self.view.sel()[0])
         line = self.view.substr(region)
 
@@ -37,7 +228,7 @@ class ConsoleAutocompleteCommand(sublime_plugin.TextCommand):
         # Получаем предложения автодополнения
         suggestions = self.get_autocomplete_suggestions(line, cursor_position)
 
-        # Отображаем меню с предложениямиpwm
+        # Отображаем меню с предложениями
         if suggestions:
             self.view.show_popup_menu(suggestions, lambda idx: self.on_done(idx, line, cursor_position))
 
@@ -135,6 +326,54 @@ class HighlightToEmptyLineCommand(sublime_plugin.TextCommand):
         view.sel().add(sublime.Region(start_position, end_position + 1))
 
 
+class HighlightToEmptyLine2Command(sublime_plugin.TextCommand):
+    def run(self, edit):
+        view = self.view
+        # Получаем начальную позицию курсора
+        current_position = view.sel()[0].begin()
+
+        # Поиск верхней границы
+        top_position = current_position
+        while True:
+            line_region = view.line(top_position)
+            if view.substr(line_region).strip() == '':
+                break
+            top_position = line_region.begin() - 1
+            if top_position < 0:
+                top_position = 0
+                break
+
+        # Поиск нижней границы
+        bottom_position = current_position
+        while True:
+            line_region = view.line(bottom_position)
+            if view.substr(line_region).strip() == '':
+                break
+            next_line = line_region.end() + 1
+            if next_line >= view.size():
+                bottom_position = view.size()
+                break
+            bottom_position = next_line
+
+        # Получаем регионы для верхней и нижней границ
+        top_line_region = view.line(top_position)
+        bottom_line_region = view.line(bottom_position)
+
+        # Создаем регион выделения от конца верхней пустой строки
+        # до конца нижней пустой строки
+        selection_region = sublime.Region(top_line_region.end() + 1, bottom_line_region.end())
+
+        # Устанавливаем курсор в центр выделенного текста
+        middle_point = (selection_region.begin() + selection_region.end()) // 2
+
+        # Очищаем текущее выделение и добавляем новое
+        view.sel().clear()
+        view.sel().add(selection_region)
+
+        # Прокручиваем вид, чтобы курсор был виден
+        view.show(middle_point)
+
+
 class AsyncRunOllamaRequestCommand(sublime_plugin.TextCommand):
     running = False
     process = None
@@ -151,7 +390,8 @@ class AsyncRunOllamaRequestCommand(sublime_plugin.TextCommand):
                     # "model": "llama3.1:8b",
                     # "model": "mistral:latest",
                     # "model": "codeqwen:latest",
-                    'model': 'qwen2.5:14b',
+                    # "model": "qwen2.5:14b",
+                    'model': 'trans_eng:latest',
                     # "prompt": f"[INST]{code}[/INST] you will respond with markdown only !",
                     # "prompt": f"[INST]{code}[/INST] you will respond with json only !",
                     # "prompt": f"[INST]{code}[/INST] you will respond with 100 chars in response only !",
@@ -167,7 +407,7 @@ class AsyncRunOllamaRequestCommand(sublime_plugin.TextCommand):
             data = res.read()
             self.view.run_command(
                 'insert_snippet',
-                {'contents': json.loads(data.decode('utf-8')).get('response', '-----')},
+                {'contents': '\n' + json.loads(data.decode('utf-8')).get('response', '-----')},
             )
         except Exception as e:
             self.view.run_command('insert_snippet', {'contents': f'Error running code: {str(e)}'})
@@ -176,7 +416,7 @@ class AsyncRunOllamaRequestCommand(sublime_plugin.TextCommand):
             self.view.run_command(
                 'insert_snippet',
                 {
-                    'contents': '\n# ====================================== end ====================================== #\n'
+                    'contents': '\n\n# ====================================== end ====================================== #\n'
                 },
             )
 
@@ -817,16 +1057,25 @@ class TextAlignLikeTableCommand(sublime_plugin.TextCommand):
 
 class TextAlignLikeTable2Command(sublime_plugin.TextCommand):
     def create_table(self, text):
-        split_sentences = [x.split(':') for x in text.split('\n')]
+        split_sentences = []
+        for line in text.split('\n'):
+            if ':' in line:
+                head, tail = line.split(':', 1)  # Split only at the first colon
+                split_sentences.append([head, tail])
+            else:
+                split_sentences.append([line, ''])  # Handle lines without colons
+
+        if not split_sentences:
+            return text
+
         max_head = max([len(x[0]) for x in split_sentences])
-        max_tail = max([len(x[1]) for x in split_sentences])
-        return '\n'.join([f'{x[0].ljust(max_head)} : {x[1].ljust(max_tail)}' for x in split_sentences])
+
+        return '\n'.join([f'{x[0].ljust(max_head)} : {x[1]}' for x in split_sentences])
 
     def run(self, edit):
         for selection in self.view.sel():
             if not selection.empty():
                 text = self.view.substr(selection)
-                print(text.split('\n'))
                 self.view.replace(edit, selection, self.create_table(text))
 
 
