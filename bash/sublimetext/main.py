@@ -26,6 +26,44 @@ from datetime import datetime, timezone, timedelta
 import ast
 
 
+class SelectWordToSpacesCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        for region in self.view.sel():
+            if region.empty():
+                # Определяем границы выделения
+                start = region.begin()
+                end = region.end()
+
+                # Расширяем влево до пробела
+                while start > 0 and not self.view.substr(start - 1).isspace():
+                    start -= 1
+
+                # Расширяем вправо до пробела
+                while end < self.view.size() and not self.view.substr(end).isspace():
+                    end += 1
+
+                # Устанавливаем новое выделение
+                self.view.sel().add(sublime.Region(start, end))
+
+
+class RemoveEmptyLinesCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        # Получаем все выделенные области
+        for region in self.view.sel():
+            # Если область не пустая
+            if not region.empty():
+                # Получаем выделенный текст
+                text = self.view.substr(region)
+                # Разделяем текст на строки
+                lines = text.splitlines()
+                # Фильтруем пустые строки
+                filtered_lines = [line for line in lines if line.strip()]
+                # Соединяем строки обратно в текст
+                new_text = '\n'.join(filtered_lines)
+                # Заменяем выделенный текст на новый
+                self.view.replace(edit, region, new_text)
+
+
 class KyivDateTimeCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         # Create Kyiv timezone
@@ -1002,25 +1040,81 @@ class SelectToRightQuoteCommand(sublime_plugin.TextCommand):
 #             print(f"Cursor line: {cursor_line + 1}")
 
 
+class ConvertTableToTextCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        for region in self.view.sel():
+            if not region.empty():
+                # Get the selected text
+                text = self.view.substr(region)
+
+                # Remove table borders and split into lines
+                lines = text.strip().split('\n')
+                lines = [line.strip() for line in lines if line.strip()]
+                lines = [line[1:-1] for line in lines if line.startswith('│')]
+
+                # Extract data from each line
+                result = []
+                for line in lines:
+                    parts = [part.strip() for part in line.split('│') if part.strip()]
+                    result.append(' - '.join(parts))
+
+                # Join the results and replace the selection
+                new_text = '\n'.join(result)
+                self.view.replace(edit, region, new_text)
+
+    def is_enabled(self):
+        # Enable the command only if there is a selection
+        return any(not region.empty() for region in self.view.sel())
+
+
 class TextRichTableCommand(sublime_plugin.TextCommand):
     def parse_input(self, input_str):
         rows = input_str.strip().split('\n')
         data = []
+        max_cols = 0
         for row in rows:
-            cols = row.split(' - ')
+            cols = [x.strip() for x in row.split(' - ')]
             data.append(cols)
-        return data
+            max_cols = max(max_cols, len(cols))
+        return data, max_cols
+
+    def is_enabled(self):
+        # Enable the command only if there is a selection
+        return any(not region.empty() for region in self.view.sel())
 
     def run(self, edit):
         for selection in self.view.sel():
             if not selection.empty():
                 text = self.view.substr(selection)
-                table = Table(show_header=False, expand=True, padding=0, show_lines=True)
-                table.add_column('', justify='center')
-                table.add_column('', justify='center')
-                for row in self.parse_input(text):
+                data, num_cols = self.parse_input(text)
+
+                # Find max width for each column
+                max_widths = [0] * num_cols
+                for row in data:
+                    for i, cell in enumerate(row):
+                        max_widths[i] = max(max_widths[i], len(cell))
+
+                table = Table(
+                    show_header=False,
+                    expand=True,
+                    padding=(0, 1),  # Добавляем padding (отступ) слева и справа
+                    show_lines=True,
+                )
+
+                # Add columns based on the maximum number of columns
+                for _ in range(num_cols):
+                    table.add_column('', justify='left')  # Выравнивание по левому краю
+
+                # Add rows to the table
+                for row in data:
                     table.add_row(*row)
-                console = Console(width=90, record=True)
+
+                # Calculate console width based on max column widths
+                console_width = (
+                    sum(max_widths) + (num_cols - 1) * 1 + num_cols * 2 + 2
+                )  # +2 for borders, *1 for space between columns, *2 for padding
+
+                console = Console(width=console_width, record=True)
                 console.print(table)
                 self.view.replace(edit, selection, console.export_text())
 
@@ -1300,12 +1394,22 @@ class PanelCommand(sublime_plugin.TextCommand):
     def run(self, edit, title):
         self.sel_w = self.view.substr(self.view.sel()[0])
         if self.sel_w:
-            new = sublime.active_window().new_file()
-            new.set_scratch(True)
-            console = Console(width=120, record=True)
+            region = self.view.sel()[0]
             text = Text(self.sel_w, justify='left')
-            console.print(Panel(text, title=title, width=120, highlight=True))
-            new.insert(edit, 0, console.export_text())
+
+            # Определение максимальной ширины текста
+            max_text_width = max(len(line) for line in self.sel_w.splitlines())
+
+            # Определение ширины заголовка
+            title_width = len(title)
+
+            # Вычисление итоговой ширины
+            width = max(max_text_width, title_width) + 4  # +4 для отступов и рамки
+
+            console = Console(width=width, record=True)
+            console.print(Panel(text, title=title, width=width, highlight=True))
+
+            self.view.replace(edit, region, console.export_text())
         else:
             print('not selected')
 
