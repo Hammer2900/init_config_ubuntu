@@ -1,5 +1,6 @@
 import ast
 import json
+import re
 
 import sublime
 import sublime_plugin
@@ -365,3 +366,31 @@ class JsonPretyCommand(sublime_plugin.TextCommand):
 class InsertFormattedJsonCommand(sublime_plugin.TextCommand):
     def run(self, edit, text):
         self.view.insert(edit, 0, text)
+
+
+class SortLinesByFirstCharacterCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        for region in self.view.sel():
+            if not region.empty():
+                # Get the selected text
+                text = self.view.substr(region)
+
+                # Split the text into lines
+                lines = text.splitlines()
+
+                # Sort the lines based on the first character (alphanumeric or symbol)
+
+                def sort_key(line):
+                    match = re.match(r'^\W*([\w\d])', line)
+                    if match:
+                        return match.group(1).lower()
+                    else:
+                        return ''
+
+                sorted_lines = sorted(lines, key=sort_key)
+
+                # Join the sorted lines back into a single string
+                sorted_text = '\n'.join(sorted_lines)
+
+                # Replace the selected text with the sorted text
+                self.view.replace(edit, region, sorted_text)
