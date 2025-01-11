@@ -26,6 +26,34 @@ from datetime import datetime, timezone, timedelta
 import ast
 
 
+class RenumberLinesCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        for region in self.view.sel():
+            if not region.empty():
+                text = self.view.substr(region)
+                lines = text.split('\n')
+                new_lines = []
+                counter = 1
+                first_line_processed = False
+
+                for line in lines:
+                    if not first_line_processed:
+                        if any(c.isdigit() for c in line) and '.' in line:
+                            new_lines.append(f"{counter}. {line[line.find('.') + 2:]}")
+                            counter += 1
+                            first_line_processed = True
+                        else:
+                            new_lines.append(line)
+                    else:
+                        if any(c.isdigit() for c in line) and '.' in line:
+                            new_lines.append(f"{counter}. {line[line.find('.') + 2:]}")
+                            counter += 1
+                        else:
+                            new_lines.append(line)
+
+                self.view.replace(edit, region, '\n'.join(new_lines))
+
+
 class SelectWordToSpacesCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         for region in self.view.sel():
