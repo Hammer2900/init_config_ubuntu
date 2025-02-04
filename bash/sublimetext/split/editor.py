@@ -6,72 +6,60 @@ from rich.console import Console
 from rich.text import Text
 from slugify import slugify
 from pathlib import Path
+import urllib.parse
 
 
 class OpenFileFromClipboardOrSelectionCommand(sublime_plugin.TextCommand):
     def run(self, edit):
-        # 1. Check clipboard
-        clipboard_content = sublime.get_clipboard()
-        if self.is_valid_path(clipboard_content):
-            self.open_file(clipboard_content)
-            return
+        # Используем map для применения функции is_valid_path к содержимому буфера обмена и выделенному тексту
+        paths_to_check = map(self.view.substr, filter(lambda r: not r.empty(), self.view.sel()))
+        valid_path = next(filter(self.is_valid_path, [sublime.get_clipboard(), *paths_to_check]), None)
 
-        # 2. Check selection
-        for region in self.view.sel():
-            if not region.empty():
-                selected_text = self.view.substr(region)
-                if self.is_valid_path(selected_text):
-                    self.open_file(selected_text)
-                    return
-
-        # 3. Nothing found
-        sublime.status_message('No valid file path found in clipboard or selection.')
+        if valid_path:
+            self.open_file(valid_path)
+        else:
+            sublime.status_message('No valid file path found in clipboard or selection.')
 
     def is_valid_path(self, path_str):
         """
-        Checks if the given path is a valid file path using pathlib.Path.
-
-        Args:
-            path_str: The path to check (as a string).
-
-        Returns:
-            True if the path is a valid file path, False otherwise.
+        Проверяет, является ли заданная строка допустимым путем к файлу,
+        обрабатывая file:// URI и относительные пути.
         """
-        # Remove leading/trailing whitespace and quotes
-        path_str = path_str.strip()
-        path_str = path_str.strip('"\'')
+        path_str = path_str.strip().strip('"\'')
+        path = self.get_path_from_string(path_str)
 
-        try:
-            path = Path(path_str)
-            # Check if the path is absolute and a file
-            if path.is_absolute() and path.is_file():
-                return True
-            # Check if the path is relative to the current file's directory
-            elif (self.view.file_name() and Path(self.view.file_name()).parent / path).is_file():
-                return True
-            else:
-                return False
-        except (TypeError, ValueError):
-            return False
+        return path.is_file() if path else False
+
+    def get_path_from_string(self, path_str):
+        """
+        Преобразует строку в объект Path, обрабатывая file:// URI.
+        """
+        if path_str.startswith('file:///'):
+            try:
+                decoded_path = urllib.parse.unquote(path_str[7:])
+                return Path(decoded_path)
+            except (TypeError, ValueError):
+                return None
+
+        path = Path(path_str)
+        if path.is_absolute():
+            return path
+        elif self.view.file_name():
+            return Path(self.view.file_name()).parent / path
+        else:
+            return None
 
     def open_file(self, path_str):
         """
-        Opens the file at the given path in a new tab.
-
-        Args:
-            path_str: The path to the file to open (as a string).
+        Открывает файл по заданному пути в новой вкладке.
         """
-        path = Path(path_str)
-        # If the path is relative, make it absolute based on the current file's directory
-        if not path.is_absolute() and self.view.file_name():
-            path = Path(self.view.file_name()).parent / path
+        path = self.get_path_from_string(path_str)
 
-        window = self.view.window()
-        if window:
+        if path and (window := self.view.window()):
             window.open_file(str(path))
             sublime.status_message(f'Opened file: {path}')
         else:
-            sublime.error_message('Error: No active window found.')
+            sublime.error_message('Error: No active window found or invalid path.')
 
 
 class RenumberLinesCommand(sublime_plugin.TextCommand):
