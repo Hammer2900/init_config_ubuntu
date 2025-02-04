@@ -5,6 +5,73 @@ from rich import print
 from rich.console import Console
 from rich.text import Text
 from slugify import slugify
+from pathlib import Path
+
+
+class OpenFileFromClipboardOrSelectionCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        # 1. Check clipboard
+        clipboard_content = sublime.get_clipboard()
+        if self.is_valid_path(clipboard_content):
+            self.open_file(clipboard_content)
+            return
+
+        # 2. Check selection
+        for region in self.view.sel():
+            if not region.empty():
+                selected_text = self.view.substr(region)
+                if self.is_valid_path(selected_text):
+                    self.open_file(selected_text)
+                    return
+
+        # 3. Nothing found
+        sublime.status_message('No valid file path found in clipboard or selection.')
+
+    def is_valid_path(self, path_str):
+        """
+        Checks if the given path is a valid file path using pathlib.Path.
+
+        Args:
+            path_str: The path to check (as a string).
+
+        Returns:
+            True if the path is a valid file path, False otherwise.
+        """
+        # Remove leading/trailing whitespace and quotes
+        path_str = path_str.strip()
+        path_str = path_str.strip('"\'')
+
+        try:
+            path = Path(path_str)
+            # Check if the path is absolute and a file
+            if path.is_absolute() and path.is_file():
+                return True
+            # Check if the path is relative to the current file's directory
+            elif (self.view.file_name() and Path(self.view.file_name()).parent / path).is_file():
+                return True
+            else:
+                return False
+        except (TypeError, ValueError):
+            return False
+
+    def open_file(self, path_str):
+        """
+        Opens the file at the given path in a new tab.
+
+        Args:
+            path_str: The path to the file to open (as a string).
+        """
+        path = Path(path_str)
+        # If the path is relative, make it absolute based on the current file's directory
+        if not path.is_absolute() and self.view.file_name():
+            path = Path(self.view.file_name()).parent / path
+
+        window = self.view.window()
+        if window:
+            window.open_file(str(path))
+            sublime.status_message(f'Opened file: {path}')
+        else:
+            sublime.error_message('Error: No active window found.')
 
 
 class RenumberLinesCommand(sublime_plugin.TextCommand):

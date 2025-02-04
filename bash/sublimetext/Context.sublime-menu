@@ -78,11 +78,49 @@
         "caption": "Align text like a table",
     },
     {
+        "command": "text_box_sharp",
+        "caption": "Sharp box lines",
+    },
+    {
         "command": "text_rich_table",
-        "caption": "Text to rich table",
+        "caption": "1. Text to rich table",
+    },
+    {
+        "command": "convert_table_to_text",
+        "caption": "2. Table to text",
     },
     {
         "command": "text_align_like_table",
-        "caption": "Text to rich table 2",
+        "caption": "Text to rich table 2(line strings)",
+    }
+    ,
+    {
+        "command": "text_align_like_table2",
+        "caption": "Text to rich table 3(:)",
+    }
+    ,
+    {
+        "command": "text_align_like_table3",
+        "caption": "Text to rich table 4(.)",
+    }
+    ,
+    {
+        "command": "text_align_like_table4",
+        "caption": "Text to rich table 4(-)",
+    }
+    ,
+    {
+        "command": "text_align_like_table5",
+        "caption": "Text to rich table 5(=)",
+    }
+    ,
+    {
+        "command": "remove_empty_lines",
+        "caption": "remove_empty_lines",
+    }
+    ,
+    {
+        "command": "open_file_from_clipboard_or_selection",
+        "caption": "open_file_from_clipboard_or_selection",
     }
 ]
