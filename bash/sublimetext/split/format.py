@@ -226,7 +226,9 @@ class TextAlignHierarchicalWorkerCommand(sublime_plugin.TextCommand):
         print(f"[Worker] User separators string: '{user_separators_str}'")
 
         user_separators = [s.strip() for s in user_separators_str.split(' ') if s.strip()]
-        print(f'[Worker] Parsed separators: {user_separators}')
+        # It's important that user_separators itself is what's passed,
+        # as _align_text_hierarchically will now interpret it.
+        print(f'[Worker] Parsed separators to be passed: {user_separators}')
 
         if not user_separators:
             sublime.status_message('No valid separators provided to worker.')
@@ -244,10 +246,13 @@ class TextAlignHierarchicalWorkerCommand(sublime_plugin.TextCommand):
                 continue
 
             original_text = self.view.substr(sel_region)
-            # print(f"[Worker] Selection {i+1} original text:\n'''{original_text}'''") # Раскомментируйте для детального лога
+            # print(f"[Worker] Selection {i+1} original text:\n'''{original_text}'''")
 
-            processed_text = self._align_text_hierarchically(original_text, user_separators)
-            # print(f"[Worker] Selection {i+1} processed text:\n'''{processed_text}'''") # Раскомментируйте для детального лога
+            processed_text = self._align_text_hierarchically(
+                original_text,
+                user_separators,  # Pass the parsed list
+            )
+            # print(f"[Worker] Selection {i+1} processed text:\n'''{processed_text}'''")
 
             if original_text == processed_text:
                 print(f'[Worker] Selection {i+1} - original and processed text are identical. No replacement.')
@@ -257,30 +262,57 @@ class TextAlignHierarchicalWorkerCommand(sublime_plugin.TextCommand):
                 replaced_something = True
 
         if original_selections_regions_tuples:
+            # Use the initially parsed user_separators for the status message,
+            # as this reflects what the user intended at a high level.
+            display_separators = [s.strip() for s in user_separators_str.split(' ') if s.strip()]
+            if not display_separators:  # Should not happen if we reached here, but good practice
+                display_separators = ['<none>']
+
             if replaced_something:
-                sublime.status_message(f"Aligned with separators: {', '.join(user_separators)}")
+                sublime.status_message(f"Aligned with: {', '.join(display_separators)}")
                 print('[Worker] Status message: Aligned.')
             else:
-                sublime.status_message(f"No changes made with separators: {', '.join(user_separators)}")
+                sublime.status_message(f"No changes made with: {', '.join(display_separators)}")
                 print('[Worker] Status message: No changes made.')
 
-    def _align_text_hierarchically(self, text, separators_to_use):
-        print(f'[_align_text_hierarchically] Called. Separators: {separators_to_use}')
+    def _align_text_hierarchically(self, text, original_separators_input):
+        print(f'[_align_text_hierarchically] Called. Original separators input: {original_separators_input}')
 
         input_lines_raw = text.splitlines()
         if not input_lines_raw:
             print('[_align_text_hierarchically] No input lines, returning original text.')
             return text
 
+        # --- New logic to determine mode ---
+        is_single_separator_mode = False
+        single_separator_for_splitting = None
+        separators_for_hierarchical_processing = []
+
+        if not original_separators_input:  # Should have been caught by caller
+            print('WARN: _align_text_hierarchically called with no separators.')
+            return text
+
+        # Check if all separators in the input list are identical
+        first_sep_in_input = original_separators_input[0]
+        if all(s == first_sep_in_input for s in original_separators_input):
+            is_single_separator_mode = True
+            single_separator_for_splitting = first_sep_in_input
+            # For logging consistency, though not used directly by single mode for splitting parts
+            separators_for_hierarchical_processing = [single_separator_for_splitting]
+            print(
+                f"[_align_text_hierarchically] All input separators are identical ('{single_separator_for_splitting}'). Engaging SINGLE separator mode."
+            )
+        else:
+            is_single_separator_mode = False
+            separators_for_hierarchical_processing = original_separators_input
+            # single_separator_for_splitting remains None
+            print(
+                f'[_align_text_hierarchically] Input separators are distinct. Engaging HIERARCHICAL mode with: {separators_for_hierarchical_processing}'
+            )
+        # --- End of new logic to determine mode ---
+
         all_lines_data = []
         max_parsed_cols = 0
-
-        is_single_separator_mode = len(separators_to_use) == 1
-        single_separator = separators_to_use[0] if is_single_separator_mode else None
-
-        print(
-            f'[_align_text_hierarchically] Single separator mode: {is_single_separator_mode}, Separator: {single_separator}'
-        )
 
         for line_idx, line_content in enumerate(input_lines_raw):
             if not line_content.strip():
@@ -291,31 +323,31 @@ class TextAlignHierarchicalWorkerCommand(sublime_plugin.TextCommand):
             used_separators_for_this_line = []
 
             if is_single_separator_mode:
-                # РЕЖИМ ОДНОГО РАЗДЕЛИТЕЛЯ: делим по всем вхождениям
-                parts_from_split = line_content.split(single_separator)
+                # SINGLE SEPARATOR MODE: split by all occurrences of single_separator_for_splitting
+                parts_from_split = line_content.split(single_separator_for_splitting)
                 current_line_parts = [p.strip() for p in parts_from_split]
                 if len(parts_from_split) > 1:
-                    # Заполняем использованные разделители
-                    used_separators_for_this_line = [single_separator] * (len(parts_from_split) - 1)
-                print(
-                    f'[_align_text_hierarchically] Line {line_idx} (single_sep_mode) parts: {current_line_parts}, seps: {used_separators_for_this_line}'
-                )
+                    used_separators_for_this_line = [single_separator_for_splitting] * (len(parts_from_split) - 1)
+                # print(
+                #     f"[_align_text_hierarchically] Line {line_idx} (single_sep_mode) parts: {current_line_parts}, seps: {used_separators_for_this_line}"
+                # )
 
             else:
-                # РЕЖИМ НЕСКОЛЬКИХ (ИЕРАРХИЧЕСКИХ) РАЗДЕЛИТЕЛЕЙ: используем partition
+                # HIERARCHICAL MODE: use partition with separators_for_hierarchical_processing
                 remaining_text_in_line = line_content
-                for sep_idx, sep_to_find in enumerate(separators_to_use):
+                for sep_to_find in separators_for_hierarchical_processing:  # Use the determined list
                     head, found_separator, tail = remaining_text_in_line.partition(sep_to_find)
                     if found_separator:
                         current_line_parts.append(head.strip())
-                        used_separators_for_this_line.append(found_separator)  # Сохраняем фактический разделитель
+                        used_separators_for_this_line.append(found_separator)
                         remaining_text_in_line = tail
                     else:
-                        break  # Этот иерархический разделитель не найден, переходим к следующему
-                current_line_parts.append(remaining_text_in_line.strip())  # Добавляем остаток
-                print(
-                    f'[_align_text_hierarchically] Line {line_idx} (multi_sep_mode) parts: {current_line_parts}, seps: {used_separators_for_this_line}'
-                )
+                        # This hierarchical separator not found, stop trying for this line
+                        break
+                current_line_parts.append(remaining_text_in_line.strip())
+                # print(
+                #     f"[_align_text_hierarchically] Line {line_idx} (multi_sep_mode) parts: {current_line_parts}, seps: {used_separators_for_this_line}"
+                # )
 
             all_lines_data.append(
                 {
@@ -329,14 +361,14 @@ class TextAlignHierarchicalWorkerCommand(sublime_plugin.TextCommand):
         print(f'[_align_text_hierarchically] Max parsed columns: {max_parsed_cols}')
 
         if max_parsed_cols == 0:
-            print('[_align_text_hierarchically] Max parsed columns is 0, returning original text.')
+            print('[_align_text_hierarchically] Max parsed columns is 0 (no parts found), returning original text.')
             return text
-        # Эта проверка важна: если в итоге у нас только один столбец И не было использовано ни одного разделителя
+
         if max_parsed_cols == 1 and not any(
             line_data['seps'] for line_data in all_lines_data if not line_data['is_empty']
         ):
             print(
-                '[_align_text_hierarchically] Max parsed columns is 1 AND no separators were used in any non-empty line, returning original text.'
+                '[_align_text_hierarchically] Max parsed columns is 1 AND no separators were used, returning original text.'
             )
             return text
 
@@ -345,31 +377,28 @@ class TextAlignHierarchicalWorkerCommand(sublime_plugin.TextCommand):
             if line_data['is_empty']:
                 continue
             for i, part_content in enumerate(line_data['parts']):
-                if i < max_parsed_cols:
+                if i < max_parsed_cols:  # Ensure we don't go out of bounds
                     column_widths[i] = max(column_widths[i], len(part_content))
         print(f'[_align_text_hierarchically] Column widths: {column_widths}')
 
         output_formatted_lines = []
-        for line_data_idx, line_data in enumerate(all_lines_data):
+        for line_data in all_lines_data:
             if line_data['is_empty']:
                 output_formatted_lines.append('')
                 continue
 
             current_result_segments = []
             parts_for_this_line = line_data['parts']
-            separators_for_this_line = line_data['seps']  # Это уже фактические разделители
+            separators_for_this_line = line_data['seps']
 
             for i, part_content in enumerate(parts_for_this_line):
-                # Выравниваем часть, если это не последняя часть в текущей строке
-                if i < len(parts_for_this_line) - 1:
+                if i < len(parts_for_this_line) - 1:  # Not the last part
                     aligned_part = part_content.ljust(column_widths[i])
                     current_result_segments.append(aligned_part)
-                else:  # Последняя часть строки
+                else:  # Last part, no padding
                     current_result_segments.append(part_content)
 
-                # Добавляем использованный разделитель, если он был
-                if i < len(separators_for_this_line):
-                    # separators_for_this_line[i] уже содержит фактический разделитель
+                if i < len(separators_for_this_line):  # If there's a separator after this part
                     current_result_segments.append(f' {separators_for_this_line[i]} ')
 
             final_line_str = ''.join(current_result_segments).rstrip()
