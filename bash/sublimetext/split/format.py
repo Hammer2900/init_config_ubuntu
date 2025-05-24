@@ -219,6 +219,218 @@ class TextAlignLikeTableCommand(sublime_plugin.TextCommand):
                 self.view.replace(edit, selection, self.create_table(text))
 
 
+class TextAlignHierarchicalWorkerCommand(sublime_plugin.TextCommand):
+    def run(self, edit, original_selections_regions_tuples, user_separators_str):
+        print('[Worker] Run called')
+        print(f'[Worker] Original selections: {original_selections_regions_tuples}')
+        print(f"[Worker] User separators string: '{user_separators_str}'")
+
+        user_separators = [s.strip() for s in user_separators_str.split(' ') if s.strip()]
+        print(f'[Worker] Parsed separators: {user_separators}')
+
+        if not user_separators:
+            sublime.status_message('No valid separators provided to worker.')
+            print('[Worker] No valid separators, exiting.')
+            return
+
+        replaced_something = False
+        for i, sel_region_tuple in enumerate(reversed(original_selections_regions_tuples)):
+            print(
+                f'[Worker] Processing selection {i+1}/{len(original_selections_regions_tuples)}: Region {sel_region_tuple}'
+            )
+            sel_region = sublime.Region(sel_region_tuple[0], sel_region_tuple[1])
+            if sel_region.empty():
+                print(f'[Worker] Selection {i+1} is empty, skipping.')
+                continue
+
+            original_text = self.view.substr(sel_region)
+            # print(f"[Worker] Selection {i+1} original text:\n'''{original_text}'''") # Раскомментируйте для детального лога
+
+            processed_text = self._align_text_hierarchically(original_text, user_separators)
+            # print(f"[Worker] Selection {i+1} processed text:\n'''{processed_text}'''") # Раскомментируйте для детального лога
+
+            if original_text == processed_text:
+                print(f'[Worker] Selection {i+1} - original and processed text are identical. No replacement.')
+            else:
+                print(f'[Worker] Selection {i+1} - REPLACING TEXT.')
+                self.view.replace(edit, sel_region, processed_text)
+                replaced_something = True
+
+        if original_selections_regions_tuples:
+            if replaced_something:
+                sublime.status_message(f"Aligned with separators: {', '.join(user_separators)}")
+                print('[Worker] Status message: Aligned.')
+            else:
+                sublime.status_message(f"No changes made with separators: {', '.join(user_separators)}")
+                print('[Worker] Status message: No changes made.')
+
+    def _align_text_hierarchically(self, text, separators_to_use):
+        print(f'[_align_text_hierarchically] Called. Separators: {separators_to_use}')
+
+        input_lines_raw = text.splitlines()
+        if not input_lines_raw:
+            print('[_align_text_hierarchically] No input lines, returning original text.')
+            return text
+
+        all_lines_data = []
+        max_parsed_cols = 0
+
+        is_single_separator_mode = len(separators_to_use) == 1
+        single_separator = separators_to_use[0] if is_single_separator_mode else None
+
+        print(
+            f'[_align_text_hierarchically] Single separator mode: {is_single_separator_mode}, Separator: {single_separator}'
+        )
+
+        for line_idx, line_content in enumerate(input_lines_raw):
+            if not line_content.strip():
+                all_lines_data.append({'parts': [''], 'seps': [], 'is_empty': True})
+                continue
+
+            current_line_parts = []
+            used_separators_for_this_line = []
+
+            if is_single_separator_mode:
+                # РЕЖИМ ОДНОГО РАЗДЕЛИТЕЛЯ: делим по всем вхождениям
+                parts_from_split = line_content.split(single_separator)
+                current_line_parts = [p.strip() for p in parts_from_split]
+                if len(parts_from_split) > 1:
+                    # Заполняем использованные разделители
+                    used_separators_for_this_line = [single_separator] * (len(parts_from_split) - 1)
+                print(
+                    f'[_align_text_hierarchically] Line {line_idx} (single_sep_mode) parts: {current_line_parts}, seps: {used_separators_for_this_line}'
+                )
+
+            else:
+                # РЕЖИМ НЕСКОЛЬКИХ (ИЕРАРХИЧЕСКИХ) РАЗДЕЛИТЕЛЕЙ: используем partition
+                remaining_text_in_line = line_content
+                for sep_idx, sep_to_find in enumerate(separators_to_use):
+                    head, found_separator, tail = remaining_text_in_line.partition(sep_to_find)
+                    if found_separator:
+                        current_line_parts.append(head.strip())
+                        used_separators_for_this_line.append(found_separator)  # Сохраняем фактический разделитель
+                        remaining_text_in_line = tail
+                    else:
+                        break  # Этот иерархический разделитель не найден, переходим к следующему
+                current_line_parts.append(remaining_text_in_line.strip())  # Добавляем остаток
+                print(
+                    f'[_align_text_hierarchically] Line {line_idx} (multi_sep_mode) parts: {current_line_parts}, seps: {used_separators_for_this_line}'
+                )
+
+            all_lines_data.append(
+                {
+                    'parts': current_line_parts,
+                    'seps': used_separators_for_this_line,
+                    'is_empty': False,
+                }
+            )
+            max_parsed_cols = max(max_parsed_cols, len(current_line_parts))
+
+        print(f'[_align_text_hierarchically] Max parsed columns: {max_parsed_cols}')
+
+        if max_parsed_cols == 0:
+            print('[_align_text_hierarchically] Max parsed columns is 0, returning original text.')
+            return text
+        # Эта проверка важна: если в итоге у нас только один столбец И не было использовано ни одного разделителя
+        if max_parsed_cols == 1 and not any(
+            line_data['seps'] for line_data in all_lines_data if not line_data['is_empty']
+        ):
+            print(
+                '[_align_text_hierarchically] Max parsed columns is 1 AND no separators were used in any non-empty line, returning original text.'
+            )
+            return text
+
+        column_widths = [0] * max_parsed_cols
+        for line_data in all_lines_data:
+            if line_data['is_empty']:
+                continue
+            for i, part_content in enumerate(line_data['parts']):
+                if i < max_parsed_cols:
+                    column_widths[i] = max(column_widths[i], len(part_content))
+        print(f'[_align_text_hierarchically] Column widths: {column_widths}')
+
+        output_formatted_lines = []
+        for line_data_idx, line_data in enumerate(all_lines_data):
+            if line_data['is_empty']:
+                output_formatted_lines.append('')
+                continue
+
+            current_result_segments = []
+            parts_for_this_line = line_data['parts']
+            separators_for_this_line = line_data['seps']  # Это уже фактические разделители
+
+            for i, part_content in enumerate(parts_for_this_line):
+                # Выравниваем часть, если это не последняя часть в текущей строке
+                if i < len(parts_for_this_line) - 1:
+                    aligned_part = part_content.ljust(column_widths[i])
+                    current_result_segments.append(aligned_part)
+                else:  # Последняя часть строки
+                    current_result_segments.append(part_content)
+
+                # Добавляем использованный разделитель, если он был
+                if i < len(separators_for_this_line):
+                    # separators_for_this_line[i] уже содержит фактический разделитель
+                    current_result_segments.append(f' {separators_for_this_line[i]} ')
+
+            final_line_str = ''.join(current_result_segments).rstrip()
+            output_formatted_lines.append(final_line_str)
+
+        result_text = '\n'.join(output_formatted_lines)
+        return result_text
+
+
+class TextAlignHierarchicalCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        print('[MainCommand] Run called')
+        self.original_selections_regions_tuples = [(s.begin(), s.end()) for s in self.view.sel() if not s.empty()]
+        print(f'[MainCommand] Original non-empty selections: {self.original_selections_regions_tuples}')
+
+        if not self.original_selections_regions_tuples:
+            sublime.status_message('No non-empty text selected for hierarchical alignment.')
+            print('[MainCommand] No non-empty selections, exiting.')
+            return
+
+        self.view.window().show_input_panel(
+            'Enter separators (comma-separated for hierarchy, or single for all occurrences):',  # Обновил подсказку
+            ':',
+            self.on_done_input,
+            None,
+            self.on_cancel_input,
+        )
+        print('[MainCommand] Input panel shown.')
+
+    def on_done_input(self, user_input_string):
+        print(f"[MainCommand] on_done_input called with: '{user_input_string}'")
+        separators_str = user_input_string.strip()
+        if not separators_str:
+            sublime.status_message('No separators entered.')
+            print('[MainCommand] No separators entered by user, exiting.')
+            return
+
+        if not hasattr(self, 'original_selections_regions_tuples') or not self.original_selections_regions_tuples:
+            print('[MainCommand] Error: original_selections_regions_tuples not found or empty in on_done_input.')
+            sublime.status_message('Error: Selection data lost.')
+            return
+
+        print(
+            f"[MainCommand] Running worker command with selections: {self.original_selections_regions_tuples} and separators_str: '{separators_str}'"
+        )
+        self.view.run_command(
+            'text_align_hierarchical_worker',
+            {  # Убрано подчеркивание
+                'original_selections_regions_tuples': self.original_selections_regions_tuples,
+                'user_separators_str': separators_str,
+            },
+        )
+
+    def on_cancel_input(self):
+        print('[MainCommand] on_cancel_input called.')
+        sublime.status_message('Hierarchical alignment cancelled.')
+
+    def is_enabled(self):
+        return any(not sel.empty() for sel in self.view.sel())
+
+
 class TextAlignLikeTable2Command(sublime_plugin.TextCommand):
     def create_table(self, text):
         split_sentences = []
@@ -242,9 +454,10 @@ class TextAlignLikeTable2Command(sublime_plugin.TextCommand):
                 text = self.view.substr(selection)
                 self.view.replace(edit, selection, self.create_table(text))
 
+
 class TextAlignBySeparatorCommand(sublime_plugin.TextCommand):
     def create_aligned_table(self, text, separator):
-        lines = text.split("\n")
+        lines = text.split('\n')
         if not lines:
             return text
 
@@ -253,16 +466,12 @@ class TextAlignBySeparatorCommand(sublime_plugin.TextCommand):
         for line_idx, line in enumerate(lines):
             # Если строка пустая, сохраняем ее как есть, чтобы не ломать пустые строки в выделении
             if not line.strip():
-                split_lines_content.append(
-                    None
-                )  # Используем None как маркер пустой строки
+                split_lines_content.append(None)  # Используем None как маркер пустой строки
                 continue
             parts = [part.strip() for part in line.split(separator)]
             split_lines_content.append(parts)
 
-        if not any(
-            slc is not None for slc in split_lines_content
-        ):  # Если все строки были пустыми или не было строк
+        if not any(slc is not None for slc in split_lines_content):  # Если все строки были пустыми или не было строк
             return text
 
         # 2. Определить максимальное количество столбцов (игнорируя None для пустых строк)
@@ -272,8 +481,8 @@ class TextAlignBySeparatorCommand(sublime_plugin.TextCommand):
                 max_cols = max(max_cols, len(parts))
 
         if max_cols == 0:  # Если все строки были пустыми или не содержали частей
-            return "\n".join(
-                l if l is not None else "" for l in lines
+            return '\n'.join(
+                l if l is not None else '' for l in lines
             )  # Возвращаем исходные строки (пустые остаются пустыми)
 
         # 3. Рассчитать максимальную ширину для каждого столбца
@@ -287,13 +496,11 @@ class TextAlignBySeparatorCommand(sublime_plugin.TextCommand):
 
         # 4. Сформировать отформатированные строки
         output_lines = []
-        join_separator = (
-            f" {separator} "  # Разделитель, который будет вставлен между столбцами
-        )
+        join_separator = f' {separator} '  # Разделитель, который будет вставлен между столбцами
 
         for parts in split_lines_content:
             if parts is None:  # Если это была пустая строка
-                output_lines.append("")
+                output_lines.append('')
                 continue
 
             formatted_parts = []
@@ -306,22 +513,19 @@ class TextAlignBySeparatorCommand(sublime_plugin.TextCommand):
                     if i < len(parts) - 1:  # Если это не последняя часть текущей строки
                         formatted_parts.append(part_content.ljust(column_widths[i]))
                     else:  # Последняя часть текущей строки
-                        formatted_parts.append(
-                            part_content
-                        )  # Не добавляем лишних пробелов справа
+                        formatted_parts.append(part_content)  # Не добавляем лишних пробелов справа
 
             output_lines.append(join_separator.join(formatted_parts))
 
-        return "\n".join(output_lines)
+        return '\n'.join(output_lines)
 
-    def run(self, edit, separator=":"):  # separator по умолчанию ":"
+    def run(self, edit, separator=':'):  # separator по умолчанию ":"
         for selection in self.view.sel():
             if not selection.empty():
                 text = self.view.substr(selection)
                 # Передаем separator в create_aligned_table
-                self.view.replace(
-                    edit, selection, self.create_aligned_table(text, separator)
-                )
+                self.view.replace(edit, selection, self.create_aligned_table(text, separator))
+
 
 class TextAlignLikeTable3Command(sublime_plugin.TextCommand):
     def create_table(self, text):
