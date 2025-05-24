@@ -242,6 +242,86 @@ class TextAlignLikeTable2Command(sublime_plugin.TextCommand):
                 text = self.view.substr(selection)
                 self.view.replace(edit, selection, self.create_table(text))
 
+class TextAlignBySeparatorCommand(sublime_plugin.TextCommand):
+    def create_aligned_table(self, text, separator):
+        lines = text.split("\n")
+        if not lines:
+            return text
+
+        # 1. Разделить каждую строку на части по указанному separator и убрать лишние пробелы
+        split_lines_content = []
+        for line_idx, line in enumerate(lines):
+            # Если строка пустая, сохраняем ее как есть, чтобы не ломать пустые строки в выделении
+            if not line.strip():
+                split_lines_content.append(
+                    None
+                )  # Используем None как маркер пустой строки
+                continue
+            parts = [part.strip() for part in line.split(separator)]
+            split_lines_content.append(parts)
+
+        if not any(
+            slc is not None for slc in split_lines_content
+        ):  # Если все строки были пустыми или не было строк
+            return text
+
+        # 2. Определить максимальное количество столбцов (игнорируя None для пустых строк)
+        max_cols = 0
+        for parts in split_lines_content:
+            if parts is not None:
+                max_cols = max(max_cols, len(parts))
+
+        if max_cols == 0:  # Если все строки были пустыми или не содержали частей
+            return "\n".join(
+                l if l is not None else "" for l in lines
+            )  # Возвращаем исходные строки (пустые остаются пустыми)
+
+        # 3. Рассчитать максимальную ширину для каждого столбца
+        column_widths = [0] * max_cols
+        for parts in split_lines_content:
+            if parts is None:
+                continue
+            for i, part_content in enumerate(parts):
+                if i < max_cols:
+                    column_widths[i] = max(column_widths[i], len(part_content))
+
+        # 4. Сформировать отформатированные строки
+        output_lines = []
+        join_separator = (
+            f" {separator} "  # Разделитель, который будет вставлен между столбцами
+        )
+
+        for parts in split_lines_content:
+            if parts is None:  # Если это была пустая строка
+                output_lines.append("")
+                continue
+
+            formatted_parts = []
+            for i, part_content in enumerate(parts):
+                if i < max_cols:
+                    # Последний столбец в строке не требует ljust, если он действительно последний
+                    # Но для единообразия и если после него может быть что-то (хотя тут не будет), оставим ljust
+                    # Однако, если это последний столбец И он последний в данной строке, ljust не нужен.
+                    # Но для простоты и предсказуемости, выравниваем все столбцы, кроме последнего в строке, если он не единственный.
+                    if i < len(parts) - 1:  # Если это не последняя часть текущей строки
+                        formatted_parts.append(part_content.ljust(column_widths[i]))
+                    else:  # Последняя часть текущей строки
+                        formatted_parts.append(
+                            part_content
+                        )  # Не добавляем лишних пробелов справа
+
+            output_lines.append(join_separator.join(formatted_parts))
+
+        return "\n".join(output_lines)
+
+    def run(self, edit, separator=":"):  # separator по умолчанию ":"
+        for selection in self.view.sel():
+            if not selection.empty():
+                text = self.view.substr(selection)
+                # Передаем separator в create_aligned_table
+                self.view.replace(
+                    edit, selection, self.create_aligned_table(text, separator)
+                )
 
 class TextAlignLikeTable3Command(sublime_plugin.TextCommand):
     def create_table(self, text):
