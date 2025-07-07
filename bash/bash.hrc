@@ -1,36 +1,66 @@
-# Variables
-export EDITOR='micro'
+h() {
+    "$@" --help | less
+}
+
+unset rc
+
+export PATH=/home/izot/.nimble/bin:$PATH
+
 export PIPENV_VENV_IN_PROJECT=1
+export EDITOR='micro'
 export PYTHONDONTWRITEBYTECODE=True
+export DEF_PASS=1
 
 alias ll='br -sdp'
 alias la='ls -A'
 alias l='ls -CF'
 
-# Kubernetes
-alias k='kubectl'
-alias kgpo='kubectl get pods'
-alias ksys='kubectl --namespace=kube-system'
-alias kdev2='kubectl --namespace=dev2'
-alias kprod='kubectl --namespace=prod'
-alias kging='kubectl get ingress'
-alias kding='kubectl describe ingress'
+alias s='sudo'
+alias p='pwd'
+alias c='clear'
+alias t='touch'
+alias d='mkdir'
+alias m='micro'
+alias b='btop'
+alias h='htop'
+alias y='yazi'
+alias n='nimble'
+alias lg='lazygit'
+alias shm='cd /dev/shm/'
+alias home='cd /home/izot/'
+alias conf='cd /home/izot/.config/'
+alias down='cd /home/izot/Downloads'
+alias comp='cd /home/izot/Downloads/compiled'
+alias rztk='/home/izot/Downloads/compiled/bott5.bin interactive'
+alias tmp='cd /var/tmp/'
+alias chtar='curl cheat.sh/tar'
+alias chnim='curl cheat.sh/nim'
+alias pi--p31='pipenv install --python 3.10'
+alias pi--p311='pipenv install --python 3.11'
+alias pi--p312='pipenv install --python 3.12'
+alias pi--p313='pipenv install --python 3.13'
+alias pi--p311='pipenv install --python 3.14'
 
-# DNF: Short commands
-alias sdnfi='sudo dnf install'
-alias sdnfs='sudo dnf search'
-alias sdnfii='sudo dnf info'
-
-alias hg='history | grep'
-alias pi='pip install'
-alias pf='pip freeze'
+alias piei='pipenv install'
+alias pieu='pipenv uninstall'
+alias pies='pipenv shell'
+alias piec='pipenv check'
+alias pier='pipenv run'
+alias h-g='history | grep'
+alias p-i='pip install'
+alias p-l='pip list'
+alias p-f='pip freeze'
 alias ..='cd ..'
 alias chmod="sudo chmod +x"
 alias disk="sudo duf"
-alias htop2="zenith"
 alias i="navi --path '/home/izot/Documents/all.cheat'"
 alias dpa="sudo docker system prune -a"
-alias dprune='docker system prune'
+alias dp='sudo docker system prune'
+alias dis='sudo docker images'
+
+alias tools='/jek/jek/TEMP/all_python/.venv/bin/python /jek/jek/TEMP/all_python/ai_cli_commander.py'
+#alias dib='distrobox'
+#alias dib-l='distrobox-list --root'
 
 alias cp="cp -i"                          # confirm before overwriting something
 alias df='df -h'                          # human-readable sizes
@@ -38,15 +68,419 @@ alias free='free -m'                      # show sizes in MB
 
 alias pin='ping -D -O 8.8.8.8'
 
-# Docker: BASIC
-alias doc='docker ps;docker images;'
-alias docp='docker ps'
-alias doci='docker images'
-alias dp='docker system prune'
-alias dpa="sudo docker system prune -a"
+alias n120='nimpretty --maxLineLen:120'
+alias nimdev='tmux new-session -d -s nimdev \; split-window -v \; split-window -h \; select-pane -t 0 \; send-keys "hx" Enter \; select-pane -t 1 \; send-keys "cd /dev/shm/" Enter \; select-pane -t 2 \; attach-session -t nimdev'
+alias nimdevc='tmux kill-session -t nimdev'
+alias nas='ssh -i /jek/jek/TEMP/Key/ssh/izot izot@192.168.28.250'
 
-# alias ls='exa -al --color=always --group-directories-first'
-# alias la='exa --tree --level=2'
-# alias ll='exa -l --color=always --group-directories-first'
-# alias lt='exa -aT --color=always --group-directories-first'
-# alias ..='cd ..'
+export DISTROBOX_HOME="/storage/DISTRO-BOX-REPO/"
+
+export CLOUDSDK_AUTH_EMAIL=evgeny2900@gmail.com
+export GIT_HUB_AUTHORIZATION='Basic 1'
+# export GOOGLE_APPLICATION_CREDENTIALS=/home/izot/Downloads/tiein-83006-firebase-adminsdk-2ktmb-12c27d6c06.json
+export GOOGLE_APPLICATION_CREDENTIALS=/home/izot/Downloads/___/HammerNotes/credentials/orendar1/small-talk-3f264-9de74325f23f.json
+
+export SSH_KEY=/home/izot/Documents/Key/ssh/izot
+export DOCKER_LOGIN="1"
+export DOCKER_PASSWORD="1"
+
+export QT_QPA_PLATFORMTHEME="qt5ct"
+
+
+source /home/izot/.config/broot/launcher/bash/br
+export LD_LIBRARY_PATH=/usr/lib
+export PATH="$PATH:/usr/local/bin"
+export LD_LIBRARY_PATH=/usr/local/lib:/dev/shm/libpostal/src/.libs:$LD_LIBRARY_PATH
+eval "$(navi widget bash)"
+export LD_LIBRARY_PATH=/usr/local/lib64:$LD_LIBRARY_PATH
+export BROWSER=w3m
+export OLLAMA_MODELS=/storage/AI-models
+export PATH="$PATH:/jek/jek/Documents/v"
+export GEMINI_API_KEY=1
+export TELEGRAM_RAT_TOKEN=1
+export TELEGRAM_RAT_TOKEN2=1
+export TELEGRAM_RAT_CHAT_ID=1
+
+export VBOX_HWVIRTEX_IGNORE_SVM_IN_USE=true
+export GROQ_API_KEY=gsk_p84
+
+cd() { builtin cd "$@" && ls --color=auto; }
+
+f() { find . -iname "*$1*" 2>/dev/null; }
+
+search() { grep -rn --color=auto "$1" .; }
+
+extract() {
+  if [ -f "$1" ]; then
+    case "$1" in
+      *.tar.bz2) tar xjf "$1" ;;
+      *.tar.gz)  tar xzf "$1" ;;
+      *.bz2)     bunzip2 "$1" ;;
+      *.rar)     unrar x "$1" ;;
+      *.gz)      gunzip "$1" ;;
+      *.tar)     tar xf "$1" ;;
+      *.tbz2)    tar xjf "$1" ;;
+      *.tgz)     tar xzf "$1" ;;
+      *.zip)     unzip "$1" ;;
+      *.Z)       uncompress "$1" ;;
+      *.7z)      7z x "$1" ;;
+      *)         echo "'$1' не может быть распакован этим методом." ;;
+    esac
+  else
+    echo "'$1' не файл."
+  fi
+}
+
+mkcd() { mkdir -p "$1" && cd "$1"; }
+
+hist_grep() { history | grep --color=auto "$1"; }
+
+serve() { python -m http.server "${1:-8000}"; }
+
+up() {
+  local depth="${1:-1}";
+  local dir="";
+  for ((i=1; i<=depth; i++)); do
+    dir+="../";
+  done;
+  cd "$dir" && ls --color=auto;
+}
+
+kill_by_name() {
+  if [ -z "$1" ]; then
+    echo "Использование: kill_by_name <имя_процесса>"
+    return 1
+  fi
+  echo "Попытка завершить процессы, содержащие '$1'..."
+  pkill -f "$1"
+  if [ $? -eq 0 ]; then
+    echo "Процессы завершены (или не найдены)."
+  else
+    echo "Ошибка при попытке завершить процессы."
+  fi
+}
+
+kill_port() {
+  if [ "$#" -ne 1 ]; then
+    echo "Использование: kill_port <номер_порта>"
+    return 1
+  fi
+  local port="$1"
+  local pid=$(lsof -t -i ":$port" -sTCP:LISTEN)
+  if [ -z "$pid" ]; then
+    echo "Нет процессов, слушающих порт $port."
+    return 0
+  else
+    echo "Найден процесс (PID: $pid) на порту $port. Завершение..."
+    kill -9 "$pid"
+    echo "Процесс завершен."
+  fi
+}
+
+make_archive() {
+  if [ "$#" -ne 2 ]; then
+    echo "Использование: make_archive <имя_архива_без_расширения> <файл_или_каталог>"
+    return 1
+  fi
+  local archive_name="$1.tar.gz"
+  local source_path="$2"
+  if [ ! -e "$source_path" ]; then
+    echo "Ошибка: '$source_path' не существует."
+    return 1
+  fi
+  echo "Создание архива '$archive_name' из '$source_path'..."
+  tar -czvf "$archive_name" "$source_path"
+  echo "Готово."
+}
+
+sysinfo() {
+  echo "=== Информация о системе ==="
+  echo "Ядро: $(uname -a)"
+  echo "Свободная память: $(free -h | awk '/^Mem:/ {print $4}')"
+  echo "Использование диска (.): $(df -h . | awk 'NR==2 {print $5 "/" $2}')"
+  echo "=== End ==="
+}
+
+copy_to_clipboard() {
+  if command -v xclip > /dev/null 2>&1; then
+    xclip -selection clipboard
+  elif command -v xsel > /dev/null 2>&1; then
+    xsel --clipboard
+  elif command -v pbcopy > /dev/null 2>&1; then # macOS
+    pbcopy
+  else
+    echo "Ошибка: Не найдена утилита для работы с буфером обмена (xclip, xsel, pbcopy)." >&2
+    return 1
+  fi
+}
+
+dotlink() {
+  if [ "$#" -ne 2 ]; then
+    echo "Использование: dotlink <исходный_файл_или_каталог> <целевой_путь>"
+    return 1
+  fi
+  local source="$1"
+  local target="$2"
+
+  if [ ! -e "$source" ]; then
+    echo "Ошибка: Источник '$source' не существует."
+    return 1
+  fi
+
+  if [ -e "$target" ]; then
+    echo "Ошибка: Цель '$target' уже существует."
+    return 1
+  fi
+
+  echo "Создание символической ссылки: '$source' -> '$target'"
+  ln -s "$source" "$target"
+}
+
+timestamp_backup() {
+  if [ "$#" -ne 1 ]; then
+    echo "Использование: timestamp_backup <файл_для_резервной_копии>"
+    return 1
+  fi
+  local source_file="$1"
+  if [ ! -f "$source_file" ]; then
+    echo "Ошибка: '$source_file' не является файлом."
+    return 1
+  fi
+  local timestamp=$(date +%Y%m%d_%H%M%S)
+  local backup_file="${source_file}_${timestamp}"
+  echo "Создание резервной копии: '$source_file' -> '$backup_file'"
+  cp -p "$source_file" "$backup_file"
+  echo "Готово."
+}
+
+e() { ${EDITOR:-nano} "$@"; }
+
+count_lines() { wc -l "$@"; }
+
+ping_count() {
+  if [ "$#" -lt 1 ]; then
+    echo "Использование: ping_count <хост> [количество, по умолчанию 4]"
+    return 1
+  fi
+  local host="$1"
+  local count="${2:-4}"
+  ping -c "$count" "$host"
+}
+
+check_port() {
+  if [ "$#" -ne 2 ]; then
+    echo "Использование: check_port <хост> <порт>"
+    return 1
+  fi
+  local host="$1"
+  local port="$2"
+  echo "Проверка $host:$port..."
+  nc -zv "$host" "$port"
+}
+
+find_large_files() {
+  local min_size="${1:-100M}"
+  local count="${2:-10}"
+  echo "Поиск файлов размером от $min_size в '.' и ниже, вывод $count самых больших..."
+  find . -type f -size "+$min_size" -print0 | xargs -0 du -h | sort -rh | head -n "$count"
+}
+# Примеры: find_large_files, find_large_files 1G, find_large_files 500M 20
+
+my_public_ssh_key() {
+  local key_path="$HOME/.ssh/id_rsa.pub"
+  if [ -f "$key_path" ]; then
+    cat "$key_path"
+  else
+    echo "Ошибка: Публичный SSH ключ не найден по пути '$key_path'." >&2
+    return 1
+  fi
+}
+
+create_passwd_hash() {
+  if [ "$#" -ne 1 ]; then
+    echo "Использование: create_passwd_hash <пароль>"
+    return 1
+  fi
+  local password="$1"
+  local salt=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 8)
+  echo "Пароль хеш для '$password':"
+  openssl passwd -1 -salt "$salt" "$password"
+}
+
+tempdir() {
+  local tmp_dir=$(mktemp -d)
+  if [ -d "$tmp_dir" ]; then
+    echo "Создан и переходим в временный каталог: $tmp_dir"
+    cd "$tmp_dir" && pwd
+  else
+    echo "Ошибка создания временного каталога." >&2
+    return 1
+  fi
+}
+
+rand_passwd() {
+  local length="${1:-16}"
+  < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c"${length}"
+  echo
+}
+
+count_items() {
+  local item_count=$(ls -A1 "$@" | wc -l)
+  local dir_name="${1:-.}"
+  echo "В '$dir_name' содержится $item_count объектов (файлов и каталогов)."
+}
+
+get_domain() {
+  if [ "$#" -ne 1 ]; then
+    echo "Использование: get_domain <url>"
+    echo "Пример: get_domain https://www.example.com/path/to/page"
+    return 1
+  fi
+  local url="$1"
+  local url_no_scheme=$(echo "$url" | sed 's|^[^/]*://||')
+  local domain=$(echo "$url_no_scheme" | sed 's|/.*$||')
+  echo "$domain"
+}
+
+open_dir() {
+  local target_dir="${1:-.}"
+  if [ ! -d "$target_dir" ]; then
+    echo "Ошибка: '$target_dir' не является каталогом."
+    return 1
+  fi
+
+  if command -v xdg-open > /dev/null 2>&1; then
+    xdg-open "$target_dir"
+  elif command -v open > /dev/null 2>&1; then
+    open "$target_dir"
+  elif command -v explorer > /dev/null 2>&1; then
+    explorer "$(wslpath -w "$target_dir")"
+  else
+    echo "Ошибка: Не найдена утилита для открытия каталога (xdg-open, open, explorer)." >&2
+    return 1
+  fi
+}
+
+largest_dirs() {
+  local target_dir="${1:-.}"
+  local count="${2:-10}"
+
+  if [ ! -d "$target_dir" ]; then
+    echo "Ошибка: '$target_dir' не является каталогом." >&2
+    return 1
+  fi
+
+  echo "Поиск $count самых больших подкаталогов в '$target_dir'..."
+  du -h -d 1 "$target_dir" 2>/dev/null | sort -rh | head -n "$count"
+}
+
+dns() {
+  if [ "$#" -ne 1 ]; then
+    echo "Использование: dns <хостнейм>"
+    echo "Пример: dns google.com"
+    return 1
+  fi
+  local hostname="$1"
+  if command -v dig > /dev/null 2>&1; then
+    dig +short "$hostname"
+  elif command -v nslookup > /dev/null 2>&1; then
+    nslookup "$hostname" | awk '/^Address: / { print $2 }' | grep -v '^127\.0\.0\.1$'
+  else
+    echo "Ошибка: Не найдена утилита для DNS-запросов (dig или nslookup)." >&2
+    return 1
+  fi
+}
+
+mangrep() {
+  if [ "$#" -ne 2 ]; then
+    echo "Использование: mangrep <команда> <слово_для_поиска>"
+    echo "Пример: mangrep ls color"
+    return 1
+  fi
+  local command="$1"
+  local term="$2"
+  man "$command" | grep --color=always -C 5 "$term"
+}
+
+path_contains() {
+  if [ "$#" -ne 1 ]; then
+    echo "Использование: path_contains <строка_для_поиска_в_PATH>"
+    return 1
+  fi
+  echo "$PATH" | tr : \\n | grep --color=auto "$1"
+}
+
+show_shell_config() {
+  local DEFAULT_CONFIG_BASH="$HOME/.bashrc"
+  local DEFAULT_CONFIG_ZSH="$HOME/.zshrc"
+
+  local CONFIG_FILE=""
+
+  # Логика выбора файла конфигурации (оставляем как есть, она правильная)
+  if [ "$#" -gt 1 ]; then
+    echo "Использование: show_shell_config [путь_к_файлу_конфигурации]" >&2
+    return 1
+  elif [ "$#" -eq 1 ]; then
+    CONFIG_FILE="$1"
+  elif [ -f "$DEFAULT_CONFIG_BASH" ]; then
+    CONFIG_FILE="$DEFAULT_CONFIG_BASH"
+    echo "Используем стандартный файл Bash: $CONFIG_FILE" >&2
+  elif [ -f "$DEFAULT_CONFIG_ZSH" ]; then
+    CONFIG_FILE="$DEFAULT_CONFIG_ZSH"
+    echo "Используем стандартный файл Zsh: $CONFIG_FILE" >&2
+  else
+    echo "Ошибка: Стандартные файлы конфигурации (~/.bashrc, ~/.zshrc) не найдены." >&2
+    return 1
+  fi
+
+  # Проверка существования файла (оставляем как есть, она правильная)
+  if [ ! -f "$CONFIG_FILE" ]; then
+    echo "Ошибка: Файл конфигурации '$CONFIG_FILE' не найден." >&2
+    return 1
+  fi
+
+  echo "--- Пользовательские алиасы из $CONFIG_FILE ---"
+  # Находим строки с алиасами (игнорируя комментарии)
+  # Затем используем sed для извлечения имени алиаса (часть между "alias " и "=")
+  # И сортируем для удобства чтения
+  grep '^[[:space:]]*alias[[:space:]]' "$CONFIG_FILE" | \
+  grep -v '^[[:space:]]*#' | \
+  sed -E "s/^[[:space:]]*alias[[:space:]]+([^=]+)=.*/\1/" | \
+  sort
+
+  echo ""
+
+  echo "--- Пользовательские функции из $CONFIG_FILE ---"
+  # Находим строки определения функций (учитывая разные форматы: name() {} и function name {})
+  # Игнорируем комментарии
+  # Затем используем sed для извлечения имени функции
+  # И сортируем для удобства чтения
+  grep -E '^[[:space:]]*(function[[:space:]]+)?[a-zA-Z_][a-zA-Z0-9_]*[[:space:]]*(\(\))?[[:space:]]*{' "$CONFIG_FILE" | \
+  grep -v '^[[:space:]]*#' | \
+  sed -E "s/^[[:space:]]*(function[[:space:]]+)?([a-zA-Z_][a-zA-Z0-9_]*).*/\2/" | \
+  sort
+
+  return 0
+}
+
+alias psg="ps aux | grep -v grep | grep"
+alias dus='du -sh * | sort -h'
+alias t='tree -C -L 2'
+alias last_modified='ls -lt | head -n 6'
+alias myip='curl ifconfig.me 2>/dev/null'
+alias speedtest='speedtest-cli --simple'
+alias listening_ports='sudo ss -tulnp'
+alias viewcat='bat --style=numbers,changes,grid'
+alias cl='clear && ls --color=auto'
+
+alias gs='git status'                                 # Быстрый статус репозитория
+alias ga='git add .'                                  # Добавить все измененные файлы
+alias gc='git commit -m'                              # Коммит с сообщением (использование: gc "My message")
+alias gl='git log --oneline --graph --decorate --all' # Красивый однострочный лог с ветками
+alias gp='git push'                                   # Отправить изменения
+alias gpl='git pull'                                  # Получить изменения
+alias dirs_stack='dirs -v'
+alias untarbz='tar -xjf'
+alias watchlog='tail -f'
+alias clh='history -c'
+alias sr='sudo systemctl restart'
