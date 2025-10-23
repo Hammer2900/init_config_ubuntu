@@ -1,0 +1,20 @@
+{
+  "data-root": "/storage/DOCKER-HOUSE/",
+  "features": {
+    "buildkit": true
+  },
+  "registry-mirrors": [
+    "https://mirror.gcr.io"
+  ],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "10m",
+    "max-file": "3"
+  },
+  "exec-opts": [
+    "native.cgroupdriver=systemd"
+  ],
+  "insecure-registries": [
+    "127.0.0.0/8"
+  ]
+}
