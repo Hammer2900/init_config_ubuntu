@@ -1,0 +1,6 @@
+[
+    { "caption": "LiveBlock: Edit",   "command": "live_block_edit" },
+    { "caption": "LiveBlock: Info",   "command": "live_block_info" },
+    { "caption": "LiveBlock: Regen",  "command": "live_block_regen_cursor" },
+    { "caption": "LiveBlock: Insert", "command": "live_block_insert" }
+]
