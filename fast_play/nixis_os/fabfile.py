@@ -9,8 +9,8 @@ from pathlib import Path
 
 server = Connection(
     # host='nixos@192.168.28.179',
-    # host='nixos@192.168.28.211',
-    host='izot@192.168.28.179',
+    host='nixos@192.168.28.186',
+    # host='izot@192.168.28.179',
     connect_kwargs={
         'password': '123456',
     },
@@ -124,13 +124,12 @@ def upload_config_rebuild(ctx):
     ctx.run('lscpu')
     ctx.run('lsblk')
     ctx.run('df -m /nix/store/')
-    # assert False
     ctx.put('.configuration.nix', '/dev/shm/configuration.nix')
     ctx.put('copy_config.nix', '/dev/shm/copy_config.nix')
     ctx.sudo('cp /dev/shm/configuration.nix /etc/nixos/configuration.nix')
     ctx.sudo('cp /dev/shm/copy_config.nix /etc/nixos/copy_config.nix')
     # ctx.sudo('cat /mnt/etc/nixos/configuration.nix')
-    ctx.sudo('nixos-rebuild switch', warn=True)
+    # ctx.sudo('nixos-rebuild switch', warn=True)
 
 
 @task
@@ -162,10 +161,78 @@ def install_my_configs(ctx):
     # dif_config(ctx, 'path', single=True, replace=True)
 
 
+@task
+def install_nixos(ctx):
+    # 1. Загружаем ваш конфиг во временную папку
+    ctx.put('.configuration.nix', '/dev/shm/configuration.nix')
+
+    # 2. Копируем его в смонтированную систему на диске
+    # ВАЖНО: Копируем в /mnt/etc/nixos/, так как диск примонтирован в /mnt
+    ctx.sudo('cp /dev/shm/configuration.nix /mnt/etc/nixos/configuration.nix')
+
+    # 3. Файл hardware-configuration.nix уже там (его создал nixos-generate-config)
+    ctx.sudo('ls -l /mnt/etc/nixos/')
+
+    # 4. ЗАПУСКАЕМ УСТАНОВКУ
+    # --root /mnt говорит инсталлеру, где искать новую систему
+    ctx.sudo('nixos-install --no-root-passwd')
+
+    print('Установка завершена. Можно делать reboot.')
+
+
+@task
+def wipe_disk(ctx, disc='/dev/sda'):
+    """
+    fab wipe-disk
+    Полностью очищает диск перед новой установкой.
+    """
+    print(f'[!] ВНИМАНИЕ: Начинаем полное уничтожение данных на {disc}')
+
+    # 1. Отключаем swap, чтобы освободить диск
+    ctx.sudo('swapoff -a', warn=True)
+
+    # 2. Принудительно отмонтируем все, что примонтировано в /mnt
+    ctx.sudo('umount -R /mnt', warn=True)
+
+    # 3. Уничтожаем подписи файловых систем (ext4, fat32, swap и т.д.)
+    ctx.sudo(f'wipefs -af {disc}', warn=True)
+
+    # 4. Забиваем нулями первый мегабайт (гарантированно убиваем MBR/GPT)
+    ctx.sudo(f'dd if=/dev/zero of={disc} bs=1M count=10', warn=True)
+
+    # 5. Сообщаем ядру, что таблица разделов изменилась
+    ctx.sudo(f'partprobe {disc}', warn=True)
+
+    print('[✔] Диск девственно чист! Теперь можно запускать таску mbr или uefi.')
+
+
+@task
+def search(ctx, query):
+    """
+    Поиск точного имени пакета в репозиториях NixOS.
+    Использование: fab search spacefm
+    """
+    print(f"[*] Ищем '{query}' в доступных пакетах...")
+
+    # nix-env -qaP выводит список всех пакетов с их путями (attrPath)
+    # grep -i ищет без учета регистра
+    # warn=True нужен, чтобы скрипт не падал, если grep ничего не найдет
+    command = f"nix-env -qaP | grep -i {query}"
+
+    result = ctx.run(command, warn=True)
+
+    if result.failed:
+        print(f"[!] По запросу '{query}' ничего не найдено.")
+    else:
+        print("[✔] Найденные совпадения (используй имя из левой колонки):")
+
+
 if __name__ == '__main__':
     # pwd(server)
-    # mbr(server)
+    mbr(server)
     # mbr(server, disc='/dev/nvme0n1', disk1='/dev/nvme0n1p1', disk2='/dev/nvme0n1p2')
     upload_config_rebuild(server)
     # uefi(server)
     # install_my_configs(server)
+    install_nixos(server)
+    # wipe_disk(server)
