@@ -5,8 +5,7 @@
 { config, pkgs, ... }:
 
 {
-  imports =
-    [
+  imports =[
       ./hardware-configuration.nix
     ];
 
@@ -14,7 +13,7 @@
   boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
 
   # Nix settings
-  nix.settings.max-jobs = 4; # Заменило старое nix.maxJobs
+  nix.settings.max-jobs = 4;
   nix.gc.automatic = true;
   nix.gc.options = "--delete-older-than 1d";
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -30,7 +29,7 @@
   networking.networkmanager.enable = true;
   networking.nameservers =[ "8.8.8.8" "8.8.4.4" ];
   networking.networkmanager.connectionConfig = {
-    "ethernet.mtu" = "1462"; # Значения MTU лучше передавать строкой
+    "ethernet.mtu" = "1462";
     "wifi.mtu" = "1462";
   };
   programs.nm-applet.enable = true;
@@ -76,36 +75,38 @@
     shellAliases = { g = "git"; };
   };
 
-  # Hyprland
-  programs.hyprland.enable = true;
-
   # Locale & Time
   console.font = "Lat2-Terminus16";
   time.timeZone = "Europe/Kyiv";
 
-  # X11 & i3 (НОВЫЙ СИНТАКСИС)
-  services.xserver.enable = true;
-  services.xserver.windowManager.i3 = {
+  # ================================================================= #
+  # ГРАФИКА: X11, LightDM (Окно входа) и XFCE (Рабочий стол)
+  # ================================================================= #
+  services.xserver = {
     enable = true;
-    extraSessionCommands = "bindsym F7 exec sakura -e mc";
+
+    # Включаем менеджер входа в систему
+    displayManager.lightdm.enable = true;
+
+    # Включаем XFCE
+    desktopManager.xfce.enable = true;
+
+    # Настройки клавиатуры
+    xkb = {
+      layout = "us,ru";
+      options = "grp:switch,grp:alt_shift_toggle,grp:rctrl_toggle";
+    };
   };
 
-  # Keymap in X11 (НОВЫЙ СИНТАКСИС)
-  services.xserver.xkb = {
-    layout = "us,ru";
-    options = "grp:switch,grp:alt_shift_toggle,grp:rctrl_toggle";
-  };
-
-  # Sound (Опция sound.enable удалена, оставляем только PA или PipeWire)
-#  hardware.pulseaudio.enable = true;
-#  hardware.pulseaudio.support32Bit = true;
-
-security.rtkit.enable = true;
+  # ================================================================= #
+  # ЗВУК (Современный PipeWire)
+  # ================================================================= #
+  security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
-    pulse.enable = true; # Эмуляция PulseAudio для старых программ
+    pulse.enable = true;
   };
 
   # User
@@ -114,13 +115,13 @@ security.rtkit.enable = true;
     initialPassword = "123456";
     home = "/home/izot2";
     shell = pkgs.bash;
-    extraGroups =[ "wheel" "vboxusers" "networkmanager" "docker" "audio" ];
-    packages = with pkgs; [
+    extraGroups =[ "wheel" "vboxusers" "networkmanager" "docker" "audio" "video" ];
+    packages = with pkgs;[
       firefox tree fish lf navi btop htop
     ];
   };
 
-  # OpenGL (НОВЫЙ СИНТАКСИС)
+  # OpenGL (Для ускорения графики)
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
@@ -133,8 +134,8 @@ security.rtkit.enable = true;
     pavucontrol winbox doublecmd protonup-qt bottles python3Packages.fabric black pdm hurl sniffnet navi duf ddgr ctop linux-wifi-hotspot
     antimicrox moltengamepad qjoypad
     vim git google-chrome firefox rofi micro broot python312 python311 neofetch flameshot xarchiver freefont_ttf terminus_font
-    wget i3 i3lock i3status i3blocks blueman cht-sh sshfs
-    i3wsr i3-easyfocus i3lock-pixeled docker docker-compose cookiecutter clipit rofi-top rofi-rbw rofi-systemd rofi-bluetooth
+    wget blueman cht-sh sshfs
+    docker docker-compose cookiecutter clipit rofi-top rofi-rbw rofi-systemd rofi-bluetooth
   ];
 
   nixpkgs.config.allowUnfree = true;
@@ -186,7 +187,6 @@ security.rtkit.enable = true;
     connect-timeout = 5
   '';
 
-  # ЕСЛИ СТАВИШЬ НА ЧИСТУЮ:
   system.stateVersion = "24.05";
 
   security.allowSimultaneousMultithreading = true;
@@ -204,11 +204,8 @@ security.rtkit.enable = true;
     "fs.file-max" = 300000;
   };
 
-  # ВИРТУАЛБОКС. Если NixOS это гость (запущена внутри виртуалбокса):
+  # ВИРТУАЛБОКС. Гостевые дополнения (общий буфер обмена, адаптивное разрешение и драйверы)
   virtualisation.virtualbox.guest.enable = true;
-  # Если NixOS это хост (ты хочешь запускать виртуалки ВНУТРИ NixOS),
-  # закомментируй строку выше и раскомментируй строку ниже:
-  # virtualisation.virtualbox.host.enable = true;
 
   zramSwap.enable = true;
   zramSwap.algorithm = "lz4";
@@ -216,6 +213,8 @@ security.rtkit.enable = true;
 
   services.blueman.enable = true;
   services.tumbler.enable = true;
+
+  # Оставляем композитный менеджер для красоты (тени, прозрачность)
   services.picom = {
     enable = true;
     fade = true;
